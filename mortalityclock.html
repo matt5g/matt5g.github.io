@@ -106,12 +106,23 @@
             } else {
                 function countLeapYears(birthYear, currentYear) {
                     let count = 0;
-                    for (let year = birthYear; year <= currentYear; year++) {
-                        if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
-                            count++;
+                    if (birthYear < currentYear) {
+                        for (let year = birthYear; year <= currentYear; year++) {
+                            if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
+                                count++;
+                            }
                         }
+                        return count;
+                    } else if (birthYear > currentYear) {
+                        for (let year = birthYear; year >= currentYear; year--) {
+                            if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
+                                count--;
+                            }
+                        }
+                        return count;
+                    } else {
+                        return 0;
                     }
-                    return count;
                 }
 
                 let bday = new Date(localStorage.getItem("bDate"));
@@ -132,19 +143,19 @@
 
                     //v2 that uses milliseconds as a base for everything
 
-                    total_seconds = parseInt(miliseconds / 1000);
-                    total_minutes = parseInt(miliseconds / 60000);
+                    total_seconds = parseInt((miliseconds - L) / 1000);
+                    total_minutes = parseInt((miliseconds - L) / 60000);
                     total_hours = parseInt((miliseconds - L) / (1000*60*60));
                     leaps = parseInt(countLeapYears(bday.getFullYear(),currentdate.getFullYear())) // accounts for leap years (35064 is 4 years)
                     //drift = parseInt(years / )
                     total_days = parseInt((miliseconds - L) / 86400000 - leaps);
-                    years = parseInt(((miliseconds - L) / 86400000 - leaps) / 365);
+                    years = parseInt(total_days / 365);
 
                     seconds = parseInt(total_seconds % 60);
                     minutes = parseInt(total_minutes % 60);
                     hours = parseInt(total_hours % 24);
                     days = parseInt(total_days % 365)
-                    //console.log(total_days, total_hours, total_minutes, total_seconds)
+                    //console.log(miliseconds, years, total_days, total_hours, total_minutes, total_seconds, "leapyears: "+leaps)
 
                     switch(format) {
                         case 's':
@@ -168,10 +179,12 @@
                     fd = convertMiliseconds(timestring);
                     currentdate = new Date();
                     timestring = currentdate - bday
-                    if (fd.s < 10) {
-                        fd.s = "0" + fd.s
+                    if (fd.s < 10 && fd.s > -10) {
+                        fd.s = "0" + Math.abs(fd.s)
+                    } else {
+                        fd.s = Math.abs(fd.s)
                     }
-                    document.getElementById("clock").textContent = fd.y+":"+fd.d+":"+fd.h+":"+fd.m+":"+fd.s;
+                    document.getElementById("clock").textContent = Math.abs(fd.y)+":"+Math.abs(fd.d)+":"+Math.abs(fd.h)+":"+Math.abs(fd.m)+":"+fd.s;
                     //console.log(bday, currentdate, timestring, fd)
                 };
                 timerScreenSet();
