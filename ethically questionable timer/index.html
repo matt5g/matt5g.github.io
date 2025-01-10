@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div><span id="time">00:00</span></div>
+        <script>
+            let A = 20
+            let B = 45
+            let running = true
+            let rTimeout
+            function repeat() {
+                if(confirm("Done. Try again?") == true) {
+                    location.reload();
+                } else {
+                    location.reload();
+                }
+            }
+            function play() {
+                var audio = new Audio('alarm.mp3');
+                audio.play();
+                running = false
+                setTimeout(repeat,1500);
+            }   
+            function rTimer(min, max) {
+                rTimeout = 1000 * (Math.floor(Math.random() * (max - min) ) + min);
+                setTimeout(play,rTimeout);
+                console.log(rTimeout);
+                display = document.querySelector('#time');
+                screenTimer(rTimeout/1000 - 2, display);
+            }
+           /*  if(confirm("Start Timer?") == true) {
+                rTimer(A,B)
+            } else {
+                document.getElementById('time').innerHTML = "Reload to start timer. Or don't. I really do not care."
+                throw("You did this to yourself!"); 
+            };*/
+           /*  window.onload = function () {
+                display = document.querySelector('#time');
+                screenTimer(rTimeout/1000 - 2, display);
+            }; */
+            function screenTimer(duration, display) {
+                var timer = duration, minutes, seconds;
+                setInterval(function () {
+                    minutes = parseInt(timer / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
+            
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+            
+                    if(running == true) {
+                        display.textContent = minutes + ":" + seconds;
+                    }
+                    if (--timer < 0) {
+                        timer = duration;
+                    }
+                    console.log(running);
+                }, 1000);
+            }
+        </script>
+        <button onclick="rTimer(A,B)">Start</button>
+    </body>
+</html>
