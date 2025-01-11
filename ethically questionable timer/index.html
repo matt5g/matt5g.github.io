@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <title>moral anti-realists' timepiece</title>
+        <style>
+            time {
+                font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+                font-size:x-large
+            }
+        </style>
+    </head>
     <body>
         <div><span id="time">00:00</span></div>
         <script>
@@ -48,6 +57,9 @@
             
                     if(running == true) {
                         display.textContent = minutes + ":" + seconds;
+                    }
+                    if (seconds < 11) {
+                        document.getElementById("time").style.color = "red"
                     }
                     if (--timer < 0) {
                         timer = duration;
