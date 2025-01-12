@@ -140,7 +140,7 @@
                 localStorage.setItem('socCred',parseInt(localStorage.getItem('socCred') - 1000)); 
                 console.log(localStorage.getItem('socCred')); 
                 clock.innerText = localStorage.getItem('socCred');
-                if (parseInt(localStorage.getItem('socCred') < 0)) {
+                if (parseInt(localStorage.getItem('socCred')) < 0) {
                     document.getElementById('creditclock').style.color = '#ff531e'
                 }
                 ">Order America's Best™ Vanilla Ice Cream</button>
