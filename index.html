@@ -23,7 +23,10 @@
         </script>
         <style>
             #creditclock {
-                font-size:20px;
+                font-size:50px;
+                background-color:black;
+                color: white;
+                display: inline-block;
             }
             title {
                 color:green;
@@ -75,9 +78,15 @@
                 0
                 <script>
                     let clock = document.getElementById("creditclock");
+
+                    if (parseInt(localStorage.getItem('socCred')) < 0) {
+                        document.getElementById('creditclock').style.color = '#ff531e'
+                    }
                     if (localStorage.getItem('socCred') != null) {clock.innerText = localStorage.getItem('socCred')};
+                    
                 </script>
             </h1>
+            <br>
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Ice_cream_cone.jpg/250px-Ice_cream_cone.jpg" width="1000px" height="100px" title="your behavior has been recorded and corrective action will be taken小紅書上寫著你的名字"></img>
             <img src="https://www.shutterstock.com/shutterstock/videos/1097379083/thumb/6.jpg?ip=x480" width="400px" height="400px"></img>
             <img src="https://blogmedia.dealerfire.com/wp-content/uploads/sites/767/2018/07/women-eating-icecream-car_b.jpg" width=266px height="400px"></img>
@@ -125,7 +134,15 @@
                 </tr>
             </table>
             <img src="https://media1.giphy.com/media/cOvy3TFeH8ke6W0zbh/200w.gif?cid=6c09b952i5unc2tn851psc1o2hvlgye6q143kp6dz7as8fg1&ep=v1_gifs_search&rid=200w.gif&ct=g" width="300px" height="270px"></img>
-            <button onclick="alert('-1000 social credit'); localStorage.setItem('socCred',parseInt(localStorage.getItem('socCred') - 1000)); console.log(localStorage.getItem('socCred')); clock.innerText = localStorage.getItem('socCred');">Order America's Best™ Vanilla Ice Cream</button>
+            <button onclick="
+                alert('-1000 social credit'); 
+                localStorage.setItem('socCred',parseInt(localStorage.getItem('socCred') - 1000)); 
+                console.log(localStorage.getItem('socCred')); 
+                clock.innerText = localStorage.getItem('socCred');
+                if (parseInt(localStorage.getItem('socCred') < 0)) {
+                    document.getElementById('creditclock').style.color = '#ff531e'
+                }
+                ">Order America's Best™ Vanilla Ice Cream</button>
         </div>
     </body>
 </html>
