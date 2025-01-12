@@ -5,69 +5,97 @@
         <style>
             #time {
                 font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-                font-size: xx-large;
+                font-size: 120px;
             }
+            #starter {
+                border: none;
+                font-size: 90px;
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                letter-spacing: 4px;
+                background-color: rgb(64, 137, 64);
+                padding: 5px;
+                padding-left: 16px;
+                padding-right: 16px;
+                color: white;
+                transition-duration: 0.2s;
+            }
+            #starter:hover {
+                background-color:rgb(34, 70, 34)
+            }
+            #centration {
+                margin: auto;
+                width: 50%;
+                padding: 13%;
+                text-align: center;
+            }
+            
         </style>
     </head>
     <body>
-        <div><span id="time">00:00</span></div>
-        <script>
-            let A = 20
-            let B = 45
-            let running = true
-            let rTimeout
-            function repeat() {
-                if(confirm("Done. Try again?") == true) {
-                    location.reload();
-                } else {
-                    location.reload();
+        <div id="centration">
+            <span id="time">00:00</span>
+            <script>
+                let A = 20
+                let B = 45
+                let running = true
+                let rTimeout
+                function repeat() {
+                    if(confirm("Done. Try again?") == true) {
+                        location.reload();
+                    } else {
+                        window.location.href = "../index.html";
+                    }
                 }
-            }
-            function play() {
-                var audio = new Audio('alarm.mp3');
-                audio.play();
-                running = false
-                setTimeout(repeat,1500);
-            }   
-            function rTimer(min, max) {
-                rTimeout = 1000 * (Math.floor(Math.random() * (max - min) ) + min);
-                setTimeout(play,rTimeout);
-                console.log(rTimeout);
-                display = document.querySelector('#time');
-                screenTimer(rTimeout/1000 - 2, display);
-            }
-           /*  if(confirm("Start Timer?") == true) {
-                rTimer(A,B)
-            } else {
-                document.getElementById('time').innerHTML = "Reload to start timer. Or don't. I really do not care."
-                throw("You did this to yourself!"); 
-            };*/
-           /*  window.onload = function () {
-                display = document.querySelector('#time');
-                screenTimer(rTimeout/1000 - 2, display);
-            }; */
-            function screenTimer(duration, display) {
-                var timer = duration, minutes, seconds;
-                setInterval(function () {
-                    minutes = parseInt(timer / 60, 10);
-                    seconds = parseInt(timer % 60, 10);
-            
-                    minutes = minutes < 10 ? "0" + minutes : minutes;
-                    seconds = seconds < 10 ? "0" + seconds : seconds;
-            
-                    if(running == true) {
-                        display.textContent = minutes + ":" + seconds;
-                    }
-                    if (seconds < 11) {
-                        document.getElementById("time").style.color = "red"
-                    }
-                    if (--timer < 0) {
-                        timer = duration;
-                    }
-                    console.log(running);
-                }, 1000);
-            }
-        </script>
-        <button onclick="rTimer(A,B)">Start</button>
+                function play() {
+                    var audio = new Audio('alarm.mp3');
+                    audio.play();
+                    running = false
+                    setTimeout(repeat,1500);
+                }   
+                function rTimer(min, max) {
+                    rTimeout = 1000 * (Math.floor(Math.random() * (max - min) ) + min);
+                    setTimeout(play,rTimeout);
+                    console.log(rTimeout);
+                    display = document.querySelector('#time');
+                    screenTimer(rTimeout/1000 - 2, display);
+                }
+            /*  if(confirm("Start Timer?") == true) {
+                    rTimer(A,B)
+                } else {
+                    document.getElementById('time').innerHTML = "Reload to start timer. Or don't. I really do not care."
+                    throw("You did this to yourself!"); 
+                };*/
+            /*  window.onload = function () {
+                    display = document.querySelector('#time');
+                    screenTimer(rTimeout/1000 - 2, display);
+                }; */
+                function screenTimer(duration, display) {
+                    var timer = duration, minutes, seconds;
+                    setInterval(function () {
+                        minutes = parseInt(timer / 60, 10);
+                        seconds = parseInt(timer % 60, 10);
+                
+                        minutes = minutes < 10 ? "0" + minutes : minutes;
+                        seconds = seconds < 10 ? "0" + seconds : seconds;
+                
+                        if(running == true) {
+                            display.textContent = minutes + ":" + seconds;
+                        }
+                        if (seconds < 11) {
+                            document.getElementById("time").style.color = "red"
+                            setTimeout(function () {
+                                document.getElementById("time").style.color = "black"
+                            }, 500);
+                        }
+                        if (--timer < 0) {
+                            timer = duration;
+                        }
+                        console.log(running);
+                    }, 1000);
+                }
+            </script>
+            <br>
+            <button id="starter" onclick="rTimer(A,B)">START</button>
+        </div>
     </body>
 </html>

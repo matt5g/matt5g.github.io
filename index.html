@@ -7,11 +7,18 @@
         </title>
         <script>
             let socCred = 0
-            let password = prompt("ENTER PASSWORD")
-            let a = parseInt(Number(password),36)
-            console.log(a)
-            if (a != 30191) {
-                window.location.replace("https://www.google.com/")
+            console.log(localStorage.getItem('verified'))
+            if (localStorage.getItem('verified') != 'true') {
+                let password = prompt("ENTER PASSWORD")
+                let a = parseInt(password,36)      
+                localStorage.setItem('verified', true)
+                console.log(localStorage.getItem('verified'))
+                if (a != 42111988595771310) {
+                    window.location.replace("https://www.google.com/")
+                } 
+            }
+            function credClear() {
+                localStorage.removeItem('verified')
             }
         </script>
         <style>
