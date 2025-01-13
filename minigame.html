@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Civil Service Exam
+        </title>
+        <style>
+            .container {
+                position: relative;
+                display: inline-block;
+            }
+            body {
+                background-color: #EE1C25;
+                font-family: "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", cursive;
+                color: #FFFF00;
+            }
+            #backButton {
+                background-color: #FFFF00;
+                border: black;
+                font-family: "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", cursive;
+            }
+            .img1 {
+                width: 280px;
+
+            }
+            .overlay-image {
+            position: absolute;
+            top: 50%; /* Position overlay in the center */
+            left: 50%; /* Position overlay in the center */
+            transform: translate(-50%, -50%); /* Adjust to make the center of the overlay align */
+            width: 280px;
+        }
+        </style>
+    </head>
+    <body>
+        <script>
+            if (localStorage.getItem("socCred") == null) {
+                localStorage.setItem("socCred",0)
+            }
+            function deltaCred(points) {
+                console.log(localStorage.getItem("socCred"))
+                localStorage.setItem("socCred", parseInt(localStorage.getItem("socCred")) + points);
+                if (points >= 0) {
+                    alert("+" + points + " social credit!!!")
+                } else {
+                    alert(points + " social credit!!!")
+                }
+            }
+            function checkYes(ID, state) {
+                if (state == true) {
+                    let targetDiv = document.getElementById(ID)
+                    let check = document.createElement('img')
+                    check.src = "ministuffs/green-check-mark-icon-on-transparent-background-free-png-1159937680.png"
+                    check.className = "overlay-image"
+                    targetDiv.appendChild(check);
+                } else if (state == false) {
+                    let targetDiv = document.getElementById(ID)
+                    ex = document.createElement('img')
+                    ex.src = "ministuffs/transparent-background-red-x-png-1-download-75666-2368096388.png"
+                    ex.className = "overlay-image"
+                    targetDiv.appendChild(ex);
+                }
+            }
+        </script>
+        <button id="backButton" onclick="window.location.href = 'index.html'">&lt; back</button>
+        <h1>CIVIL SERVICE EXAM</h1>
+        <ol>
+            <li>Click the most respectable image<br>
+                <span class="container" id="c1"><img class="img1" onclick="deltaCred(2000),checkYes('c1',true)" src="ministuffs/th-463477389.jpg"></span> <span class="container" id="c2"><img class = "img1" onclick="deltaCred(0),checkYes('c2',false)" src="ministuffs/Vladimir_Putin_(2017-07-08)_(cropped)-413123480.jpg"></span> <span class="container" id="c3"><img class="img1" onclick="deltaCred(-4000),checkYes('c3',false)" src="ministuffs/president_donald_trump_GH_content_750px-3141328757.jpg"></span>
+            </li>
+        </ol>
+    </body>
+</html>
