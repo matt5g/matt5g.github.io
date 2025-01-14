@@ -14,22 +14,31 @@
                 font-family: "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", cursive;
                 color: #FFFF00;
             }
-            #backButton {
-                background-color: #FFFF00;
+            button {
+                background-color: hwb(60 0% 0%);
                 border: black;
                 font-family: "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", cursive;
+            }
+            button:hover {
+                background-color: hwb(60 0% 20%);
             }
             .img1 {
                 width: 280px;
 
             }
             .overlay-image {
-            position: absolute;
-            top: 50%; /* Position overlay in the center */
-            left: 50%; /* Position overlay in the center */
-            transform: translate(-50%, -50%); /* Adjust to make the center of the overlay align */
-            width: 280px;
-        }
+                position: absolute;
+                top: 50%; /* Position overlay in the center */
+                left: 50%; /* Position overlay in the center */
+                transform: translate(-50%, -50%); /* Adjust to make the center of the overlay align */
+                width: 280px;
+            }
+            #submitButton {
+                background-color: greenyellow;
+                width: 200px;
+                height: 50px;
+                font-size: 25px;
+            }
         </style>
     </head>
     <body>
@@ -37,6 +46,7 @@
             if (localStorage.getItem("socCred") == null) {
                 localStorage.setItem("socCred",0)
             }
+            let finalScore = 0
             function deltaCred(points) {
                 console.log(localStorage.getItem("socCred"))
                 localStorage.setItem("socCred", parseInt(localStorage.getItem("socCred")) + points);
@@ -45,6 +55,8 @@
                 } else {
                     alert(points + " social credit!!!")
                 }
+                finalScore = finalScore + points
+                console.log("current score is " + finalScore)
             }
             function checkYes(ID, state) {
                 if (state == true) {
@@ -64,12 +76,93 @@
                 console.log(document.getElementById(ID))
             }
         </script>
-        <button id="backButton" onclick="window.location.href = 'index.html'">&lt; back</button>
+        <button onclick="window.location.href = 'index.html'">&lt; back</button>
         <h1>CIVIL SERVICE EXAM</h1>
+        <script>
+            function answerCheck(qName,correctVal) {
+                const selectedValue = document.querySelector('input[name="'+qName+'"]:checked')?.value;
+                if (selectedValue == correctVal) {
+                    deltaCred(2500)
+                    document.getElementById(qName+'button').onclick = null
+                    document.getElementById(qName+'button').style.backgroundColor = 'grey'
+
+                } else {
+                    deltaCred(-2000)
+                }
+            }
+        </script>
         <ol>
             <li>Click the most respectable image<br>
                 <span class="container" id="c1"><img class="img1" onclick="deltaCred(2000),checkYes('c1',true)" src="ministuffs/th-463477389.jpg"></span> <span class="container" id="c2"><img class = "img1" onclick="deltaCred(0),checkYes('c2',false)" src="ministuffs/Vladimir_Putin_(2017-07-08)_(cropped)-413123480.jpg"></span> <span class="container" id="c3"><img class="img1" onclick="deltaCred(-4000),checkYes('c3',false)" src="ministuffs/president_donald_trump_GH_content_750px-3141328757.jpg"></span>
             </li>
+            <!--Below is the template for multiple choice questions-->
+            <br>
+            <li>
+                Choose the true statement
+                <div> 
+                    <input type="radio" name="q2" value="A">
+                    Democracy ensures that power rests with the people, allowing for collective decision-making and accountability in governance.
+                </div>
+                <div> 
+                    <input type="radio" name="q2" value="B">
+                    Free speech is essential for individual expression, fostering innovation, and enabling the challenge of unjust systems without fear of repression.
+                </div>
+                <div> 
+                    <input type="radio" name="q2" value="C">
+                    Maoism guarantees the eternal prosperity of all people by creating a flawless system where everyone is equally wealthy, endlessly happy, and completely free from conflict or hardship.
+                </div>
+                <div> 
+                    <input type="radio" name="q2" value="D">
+                    Religious freedom respects individual conscience, promotes peaceful coexistence, and protects diversity in belief systems.
+                </div>
+                <button onclick="answerCheck('q2','C')" id="q2button">check</button>
+            </li>
+            <br>
+            <li>
+                What does this image depict?
+                <div><img src="ministuffs/85-2761106459.jpg" style="width:600px;"></div>
+                <div> 
+                    <input type="radio" name="q3" value="A">
+                    A student-led demonstration that challenged the authority and power of the Chinese Communist Party
+                </div>
+                <div> 
+                    <input type="radio" name="q3" value="B">
+                    A government-led massacre that killed upwards of 2,000 people, mostly students and innocent civilians
+                </div>
+                <div> 
+                    <input type="radio" name="q3" value="C">
+                    A stand for freedom and equality similar to those prescribed by Karl Marx, the father of China's founding, yet long-abandoned principles
+                </div>
+                <div> 
+                    <input type="radio" name="q3" value="D">
+                    This image does not depict anything, and no significant historical event took place in Tiananmen Square on June 4, 1989
+                </div>
+                <button onclick="answerCheck('q3','D')" id="q3button">check</button>
+            </li>
+            <br>
+            <li>
+                What is this country?
+                <div><img src="ministuffs/taiwan-map-0-1683956695.jpg" style="width:600px;"></div>
+                <div> 
+                    <input type="radio" name="q4" value="A">
+                    Taiwan
+                </div>
+                <div> 
+                    <input type="radio" name="q4" value="B">
+                    An independent maritime nation off the coast of East Asia
+                </div>
+                <div> 
+                    <input type="radio" name="q4" value="C">
+                    A nation with historical ties to the Han chinese peoples
+                </div>
+                <div> 
+                    <input type="radio" name="q4" value="D">
+                    China; A territory belonging to the People's Republic of China
+                </div>
+                <button onclick="answerCheck('q4','D')" id="q4button">check</button>
+            </li>
         </ol>
+        <br>
+        <button id="submitButton" onclick="if(finalScore<0){alert('You lost '+finalScore+' points')}else if(finalScore >=0){alert('You gained '+finalScore+' points!')}; document.getElementById('submitButton').onclick = null; document.getElementById('submitButton').style.backgroundColor = 'grey'">SUBMIT EXAM</button>
     </body>
 </html>
