@@ -22,6 +22,21 @@
             #starter:hover {
                 background-color:rgb(34, 70, 34)
             }
+            #resetter {
+                border: none;
+                font-size: 35px;
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                letter-spacing: 4px;
+                background-color: rgb(192, 48, 48);
+                padding: 5px;
+                padding-left: 16px;
+                padding-right: 16px;
+                color: white;
+                transition-duration: 0.2s;
+            }
+            #resetter:hover {
+                background-color:rgb(118, 34, 34)
+            }
             #centration {
                 margin: auto;
                 width: 50%;
@@ -35,8 +50,12 @@
         <div id="centration">
             <span id="time">00:00</span>
             <script>
-                let A = 20
-                let B = 45
+                if (localStorage.getItem("ATime" && "BTime") == null) {
+                    localStorage.setItem("ATime",prompt("Minimum time in seconds"))
+                    localStorage.setItem("BTime",prompt("Maximum time in seconds"))
+                }
+                let A = parseInt(localStorage.getItem("ATime"))
+                let B = parseInt(localStorage.getItem("BTime"))
                 let running = true
                 let rTimeout
                 function repeat() {
@@ -93,9 +112,18 @@
                         console.log(running);
                     }, 1000);
                 }
+                function clearTimer() {
+                    localStorage.removeItem("ATime")
+                    localStorage.removeItem("BTime")
+                    location.reload();
+                }
             </script>
             <br>
             <button id="starter" onclick="rTimer(A,B)">START</button>
+            <br>
+            <br>
+            <br>
+            <div><button id="resetter" onclick="clearTimer()">RESET</button></div>
         </div>
     </body>
 </html>
