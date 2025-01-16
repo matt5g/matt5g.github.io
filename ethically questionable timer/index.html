@@ -69,7 +69,7 @@
                     var audio = new Audio('alarm.mp3');
                     audio.play();
                     running = false
-                    setTimeout(repeat,1500);
+                    setTimeout(repeat,300);
                 }   
                 function rTimer(min, max) {
                     rTimeout = 1000 * (Math.floor(Math.random() * (max - min) ) + min);
@@ -100,7 +100,7 @@
                         if(running == true) {
                             display.textContent = minutes + ":" + seconds;
                         }
-                        if (seconds < 11) {
+                        if (seconds < 11 && minutes == 0) {
                             document.getElementById("time").style.color = "red"
                             setTimeout(function () {
                                 document.getElementById("time").style.color = "black"
