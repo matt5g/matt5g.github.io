@@ -20,12 +20,29 @@
             function credClear() {
                 localStorage.clear();
             }
+            function deltaCred(points) {
+                console.log(localStorage.getItem("socCred"))
+                localStorage.setItem("socCred", parseInt(localStorage.getItem("socCred")) + points);
+                document.getElementById("creditclock").innerText = localStorage.getItem("socCred")
+                if (parseInt(localStorage.getItem('socCred')) < 0) {
+                    document.getElementById('creditclock').style.color = '#ff531e'
+                } else {
+                    document.getElementById('creditclock').style.color = '#ffffff'
+                }
+                /* if (points >= 0) {
+                    alert("+" + points + " social credit!!!")
+                } else {
+                    alert(points + " social credit!!!")
+                }
+                finalScore = finalScore + points
+                console.log("current score is " + finalScore) */
+            }
         </script>
         <style>
             #creditclock {
                 font-size:50px;
                 background-color:black;
-                color: white;
+                color: rgb(255, 255, 255);
                 margin-top: 0px;
                 display: inline-block;
             }
@@ -70,7 +87,7 @@
             <script>randomRGB("pdiddy","color", 100)</script>
             <h2>蛋捲冰淇淋服務外送單!</h2>
             <p>
-                <span id="blk">冰淇</span>Family淋尖叫<a href="https://ciao.kitchen/hazelnut-chocolate-icecream/" target="new">著大量的</a>紙請加起司請我們需要這些狂歡和起司加膝蓋冰淇淋奶油.
+                <span id="blk">冰淇</span>Family淋尖叫<a title="+1500 social credit" href="https://ciao.kitchen/hazelnut-chocolate-icecream/" target="new" onclick="deltaCred(1500)">著大量的</a>紙請加起司請我們需要這些狂歡和起司加膝蓋冰淇淋奶油.
             </p>
             <h1 style="margin-bottom: 0;">
                 Social Credit Score:
@@ -101,8 +118,8 @@
                     <h3>Also Use!</h3>
                     <ul>
                         <li>nutella</li>
-                        <li><a href="https://www.amazon.com/-/zh_TW/Amazon-Fresh-%E6%A6%9B%E6%9E%9C%E9%86%AC%E8%88%87%E5%8F%AF%E5%8F%AF%E9%86%AC-27-751-3/dp/B09PN9S9D4" target="new">happy_spread</a></li>
-                        <li><a href="https://cookpad.com/tw/%E9%A3%9F%E8%AD%9C/16811117-%E6%A6%9B%E6%9E%9C%E5%B7%A7%E5%85%8B%E5%8A%9B%E9%86%AC?ref=search&search_term=%E6%A6%9B%E6%9E%9C%E9%86%AC" target="new">artisan_authorized_product</a></li>
+                        <li><a onclick="deltaCred(500)" href="https://www.amazon.com/-/zh_TW/Amazon-Fresh-%E6%A6%9B%E6%9E%9C%E9%86%AC%E8%88%87%E5%8F%AF%E5%8F%AF%E9%86%AC-27-751-3/dp/B09PN9S9D4" target="new">happy_spread</a></li>
+                        <li><a onclick="deltaCred(3000)" href="https://cookpad.com/tw/%E9%A3%9F%E8%AD%9C/16811117-%E6%A6%9B%E6%9E%9C%E5%B7%A7%E5%85%8B%E5%8A%9B%E9%86%AC?ref=search&search_term=%E6%A6%9B%E6%9E%9C%E9%86%AC" target="new">artisan_authorized_product</a></li>
                     </ul>
                 </li>
                 <li>hazelnut_oil</li>
