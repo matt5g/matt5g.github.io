@@ -69,7 +69,8 @@
             }
             #Menu {
                 width: 0px;
-                transition: 0.2s;
+                transition: opacity 0.2s;
+                opacity: 0;
             }
             .mButton {
                 transition: 0.1s;
@@ -177,9 +178,11 @@
                     console.log(document.getElementById("Menu"))
                     if(document.getElementById("Menu").style.width == "0px" || document.getElementById("Menu").style.width == 0) {
                         document.getElementById("Menu").style.width = "150px"
+                        document.getElementById("Menu").style.opacity = "1"
                         console.log(20)
                     } else {
                         document.getElementById("Menu").style.width = "0px"
+                        document.getElementById("Menu").style.opacity = "0"
                     }
                 }
             };
