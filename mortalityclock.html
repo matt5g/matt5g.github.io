@@ -5,6 +5,8 @@
         <style>
             body {
                 background-color: black;
+                margin: 0px;
+                padding: 0px;
             }
             #clock {
                 color: white;
@@ -14,7 +16,7 @@
             .centration {
                 margin: auto;
                 width: 50%;
-                padding: 20%;
+                padding: 10%;
                 text-align: center;
             }
             #dateSelect {
@@ -29,71 +31,123 @@
                 border-width: 1px;
                 color: white;
             }
+            .hMenu {
+                background-color: black;
+                font-family:'Courier New', Courier, monospace;
+                border-width: 0px;
+                color: white;
+                width: 0px;
+                height: 100%;
+                overflow-x: hidden;
+            }
+            .hMenu a {
+                padding: 8px 8px 8px 32px;
+                text-decoration: none;
+                font-size: 20px;
+                color: #818181;
+                display: block;
+                transition: 0.3s;
+            }
             button:hover {
                 box-shadow: 2px, 2px, white;
                 color: lightgray;
             }
-        </style>
-        <script>
-        if (localStorage.getItem("bDate") == null || localStorage.getItem("bDate") == "") {
-            setTimeout( function () {document.getElementById("clock").innerHTML = "<input id='dateSelect' type='date'><br><button onclick='defineBDate()'>Confirm</button>"}, 250);
-            function defineBDate() {
-                localStorage.setItem("bDate",document.getElementById("dateSelect").value)
-                window.location.reload();
+            .fader {animation: fadeIn 5s;}
+            @keyframes fadeIn {
+                0% {opacity: 0;}
+                100% {opacity: 1;}
             }
-        } else {
-            let bday = new Date(localStorage.getItem("bDate"));
-            console.log(localStorage.getItem("bDate"))
-            let currentdate = new Date();
-            let timestring = currentdate - bday
-            function convertMiliseconds(miliseconds, format) {
-                var years, days, hours, minutes, seconds, total_days, total_hours, total_minutes, total_seconds, leaps;
-                
-                total_seconds = parseInt(miliseconds / 1000);
-                total_minutes = parseInt(total_seconds / 60);
-                total_hours = parseInt(total_minutes / 60);
-                leaps = parseInt(total_hours / 43830) // accounts for leap years (35064 is 4 years)
-                total_days = parseInt((total_hours / 24) - leaps);
-                years = parseInt(total_days / 365);
-
-                seconds = parseInt(total_seconds % 60);
-                minutes = parseInt(total_minutes % 60);
-                hours = parseInt(total_hours % 24);
-                days = parseInt(total_days % 365)
-                console.log(total_days, total_hours, total_minutes, total_seconds)
-
-                switch(format) {
-                    case 's':
-                        return total_seconds;
-                    case 'm':
-                        return total_minutes;
-                    case 'h':
-                        return total_hours;
-                    case 'd':
-                        return days;
-                    case 'td':
-                        return total_days;
-                    case 'y':
-                        return years;
-                    default:
-                        return { y: years, d: days, h: hours, m: minutes, s: seconds, td: total_days };
-                }
-            };
-            let fd
-            setInterval( function () {
-                fd = convertMiliseconds(timestring);
-                currentdate = new Date();
-                timestring = currentdate - bday
-                if (fd.s < 10) {
-                    fd.s = "0" + fd.s
-                }
-                document.getElementById("clock").textContent = fd.y+":"+fd.d+":"+fd.h+":"+fd.m+":"+fd.s;
-                console.log(bday, currentdate, timestring, fd)
-            }, 1000);
-        };
-        </script>
+            #hamburger {
+                width: 22px;
+                height: 22px;
+                padding: 32px;
+                transition: 0.3s;
+            }
+            #hamburger:hover {
+                transition: 0.3s;
+                opacity: 0.5;
+            }
+        </style>
     </head>
     <body>
-        <h1 class="centration" id="clock">00:00:00:00:00</h1>
+        <div onclick="toggleMenu()"><img id="hamburger" src="PinClipart.com_menu-clip-art_5328945.png"></div>
+        <div id="Menu" class="hMenu">
+            <a href="index.html">back</a>
+            <a href="javascript:void(0)" onclick="refClear()">reset</a>
+        </div>
+        <div class="fader"><h1 class="centration" id="clock"></h1></div>
+        <script>
+            if (localStorage.getItem("bDate") == null || localStorage.getItem("bDate") == "") {
+                //document.getElementById()
+                document.getElementById("clock").innerHTML = "<input id='dateSelect' type='date'><br><button onclick='defineBDate()'>Confirm</button>"
+                function defineBDate() {
+                    localStorage.setItem("bDate",document.getElementById("dateSelect").value)
+                    window.location.reload();
+                }
+            } else {
+                let bday = new Date(localStorage.getItem("bDate"));
+                console.log(localStorage.getItem("bDate"))
+                let currentdate = new Date();
+                let timestring = currentdate - bday
+                function convertMiliseconds(miliseconds, format) {
+                    var years, days, hours, minutes, seconds, total_days, total_hours, total_minutes, total_seconds, leaps;
+                    
+                    total_seconds = parseInt(miliseconds / 1000);
+                    total_minutes = parseInt(total_seconds / 60);
+                    total_hours = parseInt(total_minutes / 60);
+                    leaps = parseInt(total_hours / 43830) // accounts for leap years (35064 is 4 years)
+                    total_days = parseInt((total_hours / 24) - leaps);
+                    years = parseInt(total_days / 365);
+
+                    seconds = parseInt(total_seconds % 60);
+                    minutes = parseInt(total_minutes % 60);
+                    hours = parseInt(total_hours % 24);
+                    days = parseInt(total_days % 365)
+                    //console.log(total_days, total_hours, total_minutes, total_seconds)
+
+                    switch(format) {
+                        case 's':
+                            return total_seconds;
+                        case 'm':
+                            return total_minutes;
+                        case 'h':
+                            return total_hours;
+                        case 'd':
+                            return days;
+                        case 'td':
+                            return total_days;
+                        case 'y':
+                            return years;
+                        default:
+                            return { y: years, d: days, h: hours, m: minutes, s: seconds, td: total_days };
+                    }
+                };
+                let fd
+                function timerScreenSet() {
+                    fd = convertMiliseconds(timestring);
+                    currentdate = new Date();
+                    timestring = currentdate - bday
+                    if (fd.s < 10) {
+                        fd.s = "0" + fd.s
+                    }
+                    document.getElementById("clock").textContent = fd.y+":"+fd.d+":"+fd.h+":"+fd.m+":"+fd.s;
+                    //console.log(bday, currentdate, timestring, fd)
+                };
+                timerScreenSet();
+                setInterval(timerScreenSet, 1000);
+                function refClear() {
+                    localStorage.removeItem("bDate")
+                    window.location.reload();
+                }
+                function toggleMenu() {
+                    console.log(1)
+                    console.log(document.getElementById("Menu"))
+                    if(document.getElementById("Menu").style.width == 0) {
+                        document.getElementById("Menu").style.width = "150px"
+                        console.log(20)
+                    }
+                }
+            };
+        </script>
     </body>
 </html>
