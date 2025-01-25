@@ -67,13 +67,24 @@
                 transition: 0.3s;
                 opacity: 0.5;
             }
+            #Menu {
+                width: 0px;
+                transition: 0.2s;
+            }
+            .mButton {
+                transition: 0.1s;
+            }
+            .mButton:hover {
+                color: #d3d3d3;
+                transition: 0.05s;
+            }
         </style>
     </head>
     <body>
         <div onclick="toggleMenu()"><img id="hamburger" src="PinClipart.com_menu-clip-art_5328945.png"></div>
         <div id="Menu" class="hMenu">
-            <a href="index.html">back</a>
-            <a href="javascript:void(0)" onclick="refClear()">reset</a>
+            <a class="mButton" href="index.html">back</a>
+            <a class="mButton" href="javascript:void(0)" onclick="refClear()">reset</a>
         </div>
         <div class="fader"><h1 class="centration" id="clock"></h1></div>
         <script>
@@ -84,7 +95,18 @@
                     localStorage.setItem("bDate",document.getElementById("dateSelect").value)
                     window.location.reload();
                 }
+                document.getElementById("hamburger").style.opacity = 0
             } else {
+                function countLeapYears(birthYear, currentYear) {
+                    let count = 0;
+                    for (let year = birthYear; year <= currentYear; year++) {
+                        if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
+                            count++;
+                        }
+                    }
+                    return count;
+                }
+
                 let bday = new Date(localStorage.getItem("bDate"));
                 console.log(localStorage.getItem("bDate"))
                 let currentdate = new Date();
@@ -92,12 +114,23 @@
                 function convertMiliseconds(miliseconds, format) {
                     var years, days, hours, minutes, seconds, total_days, total_hours, total_minutes, total_seconds, leaps;
                     
-                    total_seconds = parseInt(miliseconds / 1000);
-                    total_minutes = parseInt(total_seconds / 60);
+                    /*total_seconds = parseInt(miliseconds / 1000);
+                    total_minutes = parseInt(total_seconds / 60 - currentdate.getTimezoneOffset());
                     total_hours = parseInt(total_minutes / 60);
                     leaps = parseInt(total_hours / 43830) // accounts for leap years (35064 is 4 years)
+                    //drift = parseInt(years / )
                     total_days = parseInt((total_hours / 24) - leaps);
-                    years = parseInt(total_days / 365);
+                    years = parseInt(total_days / 365);*/
+
+                    //v2 that uses milliseconds as a base for everything
+
+                    total_seconds = parseInt(miliseconds / 1000);
+                    total_minutes = parseInt(miliseconds / 60000);
+                    total_hours = parseInt(miliseconds / (1000*60*60) - (currentdate.getTimezoneOffset()/60));
+                    leaps = parseInt(countLeapYears(bday.getFullYear(),currentdate.getFullYear())) // accounts for leap years (35064 is 4 years)
+                    //drift = parseInt(years / )
+                    total_days = parseInt((miliseconds / 86400000) - leaps);
+                    years = parseInt(miliseconds / (365*86400000));
 
                     seconds = parseInt(total_seconds % 60);
                     minutes = parseInt(total_minutes % 60);
@@ -142,9 +175,11 @@
                 function toggleMenu() {
                     console.log(1)
                     console.log(document.getElementById("Menu"))
-                    if(document.getElementById("Menu").style.width == 0) {
+                    if(document.getElementById("Menu").style.width == "0px" || document.getElementById("Menu").style.width == 0) {
                         document.getElementById("Menu").style.width = "150px"
                         console.log(20)
+                    } else {
+                        document.getElementById("Menu").style.width = "0px"
                     }
                 }
             };
