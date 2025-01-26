@@ -112,6 +112,7 @@
                 console.log(localStorage.getItem("bDate"))
                 let currentdate = new Date();
                 let timestring = currentdate - bday
+                let L = 60*1000*currentdate.getTimezoneOffset()
                 function convertMiliseconds(miliseconds, format) {
                     var years, days, hours, minutes, seconds, total_days, total_hours, total_minutes, total_seconds, leaps;
                     
@@ -127,11 +128,11 @@
 
                     total_seconds = parseInt(miliseconds / 1000);
                     total_minutes = parseInt(miliseconds / 60000);
-                    total_hours = parseInt(miliseconds / (1000*60*60) - (currentdate.getTimezoneOffset()/60));
+                    total_hours = parseInt((miliseconds - L) / (1000*60*60));
                     leaps = parseInt(countLeapYears(bday.getFullYear(),currentdate.getFullYear())) // accounts for leap years (35064 is 4 years)
                     //drift = parseInt(years / )
-                    total_days = parseInt((miliseconds / 86400000) - leaps);
-                    years = parseInt(miliseconds / (365*86400000));
+                    total_days = parseInt((miliseconds - L) / 86400000 - leaps);
+                    years = parseInt(((miliseconds - L) / 86400000 - leaps) / 365);
 
                     seconds = parseInt(total_seconds % 60);
                     minutes = parseInt(total_minutes % 60);
