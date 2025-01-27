@@ -83,6 +83,7 @@
             input[type="date"] {
                 font-family: 'Courier New', Courier, monospace;
                 color: white;
+                
             }
         </style>
     </head>
@@ -191,6 +192,9 @@
                         setTimeout(() => document.getElementById("Menu").style.width = "0px",200)
                     }
                 }
+            };
+            if (navigator.userAgent.includes('Chrome')) {
+                document.querySelector('input[type="date"]').style.webkitTransform = "translateX(13px)"
             };
         </script>
     </body>
