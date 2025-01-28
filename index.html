@@ -12,11 +12,12 @@
             if (localStorage.getItem('verified') != 'true') {
                 let password = prompt("ENTER PASSWORD")
                 let a = parseInt(password,36)      
-                localStorage.setItem('verified', true)
                 console.log(localStorage.getItem('verified'))
                 if (a != 42111988595771310) {
                     window.location.replace("https://www.google.com/")
-                } 
+                } else if (a == 42111988595771310) {
+                    localStorage.setItem('verified', true)
+                }
             }
             function credClear() {
                 localStorage.clear();
