@@ -108,9 +108,16 @@
                     let count = 0;
                     if (birthYear < currentYear) {
                         for (let year = birthYear; year <= currentYear; year++) {
-                            if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
+                            if (((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0))) {
                                 count++;
                             }
+                        }
+                        console.log(bday,new Date(bday.getFullYear(),1,29))
+                        let dComp = new Date(bday.getFullYear(),1,28) 
+                        dComp.setDate(dComp.getDate() + 1)
+                        if (bday > dComp && dComp.getMonth() === 1) {
+                            count--;
+                            console.log(count);
                         }
                         return count;
                     } else if (birthYear > currentYear) {
@@ -118,6 +125,13 @@
                             if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
                                 count--;
                             }
+                        }
+                        console.log(bday,new Date(bday.getFullYear(),1,29))
+                        let dComp = new Date(bday.getFullYear(),1,28) 
+                        dComp.setDate(dComp.getDate() + 1)
+                        if (bday < dComp && dComp.getMonth() === 1) {
+                            count++;
+                            console.log(count);
                         }
                         return count;
                     } else {
