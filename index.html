@@ -9,6 +9,9 @@
         <script>
             console.log(localStorage.getItem('verified'))
             console.log(localStorage.getItem('socCred'))
+            if (localStorage.getItem("socCred") === null) {
+                localStorage.setItem("socCred", 0)
+            }
             if (localStorage.getItem('verified') != 'true') {
                 let password = prompt("ENTER PASSWORD")
                 let a = parseInt(password,36)      
