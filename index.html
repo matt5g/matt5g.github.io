@@ -6,7 +6,20 @@
             le website
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="intento.js"></script>
         <script>
+            document.addEventListener("keydown", (event) => {
+                if (event.shiftKey && event.key === "R") {
+                    credClear();
+                    window.location.reload();
+                }
+            });
+            function antiClockwise(str, key) {
+                return str
+                    .split("")
+                    .map(char => String.fromCharCode(char.charCodeAt(0) ^ key))
+                    .join("");
+            }
             console.log(localStorage.getItem('verified'))
             console.log(localStorage.getItem('socCred'))
             if (localStorage.getItem("socCred") === null) {
@@ -15,11 +28,18 @@
             if (localStorage.getItem('verified') != 'true') {
                 let password = prompt("ENTER PASSWORD")
                 let a = parseInt(password,36)      
+                let lvl2 = ((a * 2654435761) ^ 4236378302) % 1212023
                 console.log(localStorage.getItem('verified'))
-                if (a != 42111988595771310) {
-                    window.location.replace("https://www.google.com/")
-                } else if (a == 42111988595771310) {
+                if (a == 42111988595771310) {
                     localStorage.setItem('verified', true)
+                } else if (lvl2 == -180672) {
+                    setTimeout( function () {
+                        document.querySelectorAll('link[rel="stylesheet"], style').forEach(el => el.remove());
+                        document.querySelectorAll('*').forEach(el => el.removeAttribute('style'));
+                        let pContent = document.getElementById("targetBlock").innerHTML = antiClockwise(pInnerLore, lvl2)
+                    }, 25);
+                } else {
+                    window.location.replace("https://www.google.com")
                 }
             }
             function credClear() {
@@ -92,7 +112,7 @@
             }
         </style>
     </head>
-    <body>
+    <body id="targetBlock">
         <script src="RanGB.js?v=2"></script>
         <h3 class="blackBar"><span id="pdiddy">Other Sites: </span><button onclick="window.location.href='flasher.html'">zebra (diddy) party</button><button onclick="window.location.href = 'ethically questionable timer/index.html'">ethically questionable timer</button><button onclick="window.location.href = 'minigame.html'">civil service exam</button><button onclick="window.location.href = 'mortalityclock.html'">mortality clock</button></h3>
         <div class="aparition">
