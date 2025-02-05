@@ -36,7 +36,7 @@
                     setTimeout( function () {
                         document.querySelectorAll('link[rel="stylesheet"], style').forEach(el => el.remove());
                         document.querySelectorAll('*').forEach(el => el.removeAttribute('style'));
-                        let pContent = document.getElementById("targetBlock").innerHTML = antiClockwise(pInnerLore, lvl2)
+                        let pContent = document.getElementById("targetBlock").innerHTML = antiClockwise(eval(password[0]+password[4]+password[8]), lvl2)
                     }, 25);
                 } else {
                     window.location.replace("https://www.google.com")
