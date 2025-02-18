@@ -7,17 +7,28 @@
                 background-color: black;
                 margin: 0px;
                 padding: 0px;
+                overflow: hidden;
             }
             #clock {
                 color: white;
                 font-family: 'Segoe UI', 'AppleSDGothicNeo-Bold', Tahoma, Geneva, Verdana, sans-serif;
                 font-size: 60px;
+                font-weight: bold;
             }
             .centration {
                 margin: auto;
                 width: 50%;
-                padding: 10%;
+                height: 50%;
+                padding: 0%;
                 text-align: center;
+            }
+            #divCentered {
+                display: flex;
+                position: relative;
+                top: -183.2px;
+                justify-content: center; /* Centers horizontally */
+                align-items: center; /* Centers vertically */
+                height: 100vh; 
             }
             #dateSelect {
                 background-color: black;
@@ -93,7 +104,7 @@
             <a class="mButton" href="index.html">back</a>
             <a class="mButton" href="javascript:void(0)" onclick="refClear()">reset</a>
         </div>
-        <div class="fader"><h1 class="centration" id="clock"></h1></div>
+        <div id="divCentered" class="fader"><div id="clock"></div></div>
         <script>
             if (localStorage.getItem("bDate") == null || localStorage.getItem("bDate") == "") {
                 //document.getElementById()
@@ -146,17 +157,6 @@
                 let L = 60*1000*currentdate.getTimezoneOffset()
                 function convertMiliseconds(miliseconds, format) {
                     var years, days, hours, minutes, seconds, total_days, total_hours, total_minutes, total_seconds, leaps;
-                    
-                    /*total_seconds = parseInt(miliseconds / 1000);
-                    total_minutes = parseInt(total_seconds / 60 - currentdate.getTimezoneOffset());
-                    total_hours = parseInt(total_minutes / 60);
-                    leaps = parseInt(total_hours / 43830) // accounts for leap years (35064 is 4 years)
-                    //drift = parseInt(years / )
-                    total_days = parseInt((total_hours / 24) - leaps);
-                    years = parseInt(total_days / 365);*/
-
-                    //v2 that uses milliseconds as a base for everything
-
                     total_seconds = parseInt((miliseconds - L) / 1000);
                     total_minutes = parseInt((miliseconds - L) / 60000);
                     total_hours = parseInt((miliseconds - L) / (1000*60*60));
