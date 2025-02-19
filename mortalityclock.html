@@ -25,6 +25,7 @@
             #divCentered {
                 display: flex;
                 position: relative;
+                z-index: 1;
                 top: -183.2px;
                 justify-content: center; /* Centers horizontally */
                 align-items: center; /* Centers vertically */
@@ -43,6 +44,7 @@
                 color: white;
             }
             .hMenu {
+                position: relative;
                 background-color: black;
                 font-family:'Courier New', Courier, monospace;
                 border-width: 0px;
@@ -50,8 +52,11 @@
                 width: 0px;
                 height: 100%;
                 overflow-x: hidden;
+                z-index: 2;
             }
             .hMenu a {
+                position: relative;
+                z-index: 3;
                 padding: 8px 8px 8px 32px;
                 text-decoration: none;
                 font-size: 20px;
@@ -96,10 +101,22 @@
                 color: white;
                 
             }
+            #onTop {
+                position: relative;
+                z-index: 3;
+            }
+            #confirmer {
+                display: flex;
+                position: relative;
+                z-index: 4;
+                justify-content: center; /* Centers horizontally */
+                align-items: center; /* Centers vertically */
+                height: 75px; 
+            }
         </style>
     </head>
     <body>
-        <div onclick="toggleMenu()"><img id="hamburger" src="PinClipart.com_menu-clip-art_5328945.png"></div>
+        <div id="onTop" onclick="toggleMenu()"><img id="hamburger" src="PinClipart.com_menu-clip-art_5328945.png"></div>
         <div id="Menu" class="hMenu">
             <a class="mButton" href="index.html">back</a>
             <a class="mButton" href="javascript:void(0)" onclick="refClear()">reset</a>
@@ -108,7 +125,7 @@
         <script>
             if (localStorage.getItem("bDate") == null || localStorage.getItem("bDate") == "") {
                 //document.getElementById()
-                document.getElementById("clock").innerHTML = "<input id='dateSelect' type='date'><br><button onclick='defineBDate()'>Confirm</button>"
+                document.getElementById("clock").innerHTML = "<input id='dateSelect' type='date'><br><div id='confirmer'><button onclick='defineBDate()'>Confirm</button></div>"
                 function defineBDate() {
                     localStorage.setItem("bDate",document.getElementById("dateSelect").value)
                     window.location.reload();
