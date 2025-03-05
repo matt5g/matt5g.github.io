@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="intento.js"></script>
         <script>
+            localStorage.setItem('verified', true)
             document.addEventListener("keydown", (event) => {
                 if (event.shiftKey && event.key === "R") {
                     credClear();
