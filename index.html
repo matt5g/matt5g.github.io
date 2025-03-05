@@ -12,6 +12,7 @@
             document.addEventListener("keydown", (event) => {
                 if (event.shiftKey && event.key === "R") {
                     credClear();
+                    localStorage.setItem("verified", false)
                     window.location.reload();
                 }
             });
@@ -25,6 +26,9 @@
             console.log(localStorage.getItem('socCred'))
             if (localStorage.getItem("socCred") === null) {
                 localStorage.setItem("socCred", 0)
+            }
+            if (localStorage.getItem("verified") === null) {
+                localStorage.setItem("verified", true)
             }
             if (localStorage.getItem('verified') != 'true') {
                 let password = prompt("ENTER PASSWORD")
@@ -115,7 +119,7 @@
     </head>
     <body id="targetBlock">
         <script src="RanGB.js?v=2"></script>
-        <h3 class="blackBar"><span id="pdiddy">Other Sites: </span><button onclick="window.location.href='flasher.html'">zebra (diddy) party</button><button onclick="window.location.href = 'ethically questionable timer/index.html'">ethically questionable timer</button><button onclick="window.location.href = 'minigame.html'">civil service exam</button><button onclick="window.location.href = 'mortalityclock.html'">mortality clock</button></h3>
+        <h3 class="blackBar"><span id="pdiddy">Other Sites: </span><button onclick="window.location.href='flasher.html'">zebra (diddy) party</button><button onclick="window.location.href = 'ethically questionable timer/index.html'">ethically questionable timer</button><button onclick="window.location.href = 'minigame.html'">civil service exam</button><button onclick="window.location.href = 'mortalityclock.html'">mortality clock</button><button onclick='window.location.href = "https://JessicaJoyF.github.io"'>jessica's website</button></h3>
         <div class="aparition">
             <script>randomRGB("pdiddy","color", 100)</script>
             <h2>蛋捲冰淇淋服務外送單!</h2>
