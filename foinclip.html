@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Flip My Coin
+        </title>
+        <style>
+            body {
+                font-family: "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", cursive;
+            }
+            .centration {
+                margin: auto;
+                width: 50%;
+                text-align: center;
+            }
+            .divCentered {
+                display: flex;
+                position: relative;
+                z-index: 1;
+                justify-content: center; /* Centers horizontally */
+                align-items: center; /* Centers vertically */
+                height: 45vh; 
+            }
+            .divCentered2 {
+                display: flex;
+                position: relative;
+                z-index: 1;
+                justify-content: center; /* Centers horizontally */
+                align-items: center; /* Centers vertically */
+                height: 5vh; 
+            }
+            #title {
+                padding: 5%;
+                font-size: 72px;
+            }
+            .coinbox {
+                display: inline-block;
+            }
+            #go {
+                border: none;
+                font-size: 30px;
+                font-family: "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", cursive;
+                letter-spacing: 4px;
+                background-color: rgb(64, 137, 64);
+                padding: 5px;
+                padding-left: 16px;
+                padding-right: 16px;
+                color: white;
+                transition-duration: 0.2s;
+            }
+            #go:hover {
+                background-color:rgb(34, 70, 34)
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            let side
+            function coinFlip() {
+                let V = Math.round(Math.random())
+                if (V == 0) {
+                    side = 'heads'
+                } else {
+                    side = 'tails'
+                }
+            }
+            function coinSelected() {
+                const selectedValue = document.querySelector('input[name="coin"]:checked')?.value;
+                localStorage.setItem("coinface",selectedValue)
+            }
+        </script>
+        <h1 id="title" class="centration">Flip a coin!</h1>
+        <h2 class="centration">Choose your coin:</h2>
+        <div class="divCentered">
+            <!-- <div class="coinbox"> -->
+                <input type="radio" id="click1" name="coin" value="penny">
+                <label for="click1"><img src="coins/penny_front.png" width="240px" height="240px"></label>
+            <!-- </div>
+            <div class="coinbox"> -->
+                <input type="radio" id="click2" name="coin" value="nickel">
+                <label for="click2"><img src="coins/nickel_front.png" width="240px" height="240px"></label>
+            <!-- </div>
+            <div class="coinbox"> -->
+                <input type="radio" id="click3" name="coin" value="dime">
+                <label for="click3"><img src="coins/dime_front.png" width="240px" height="240px"></label>
+            <!-- </div>
+            <div class="coinbox"> -->
+                <input type="radio" id="click4" name="coin" value="quarter">
+                <label for="click4"><img src="coins/quarter_front.png" width="240px" height="240px"></label>
+            <!-- </div> -->
+        </div>
+        <div class="divCentered2"><button onclick="coinSelected(); window.location.href='flipui.html'" id="go">GO</button></div>
+    </body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Flip Coin</title>
+        <style>
+            body {
+                font-family: "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", cursive;
+                
+            }
+            @keyframes colorChange {
+                0% { color: red; }
+                50% { color: rgb(0, 0, 0); }
+                100% { color: red; }
+            }
+            .animated-text {
+                animation: colorChange 0.5s infinite;
+            }
+            .centration {
+                margin: auto;
+                width: 50%;
+                text-align: center;
+            }
+            #coinScreen {
+                height: 400px;
+                width: 400px;
+                cursor: pointer;
+            }
+            .divCentered {
+                display: flex;
+                position: relative;
+                z-index: 1;
+                justify-content: center; /* Centers horizontally */
+                align-items: center; /* Centers vertically */
+                height: 80vh; 
+                font-size: 100px;
+            }
+            .divCentered2 {
+                display: flex;
+                position: relative;
+                z-index: 3;
+                justify-content: center; /* Centers horizontally */
+                align-items: center; /* Centers vertically */
+                font-size: 60px;
+            }
+            #title {
+                padding: 5%;
+                font-size: 72px;
+            }
+            .coinbox {
+                display: inline-block;
+            }
+            #go {
+                border: none;
+                font-size: 30px;
+                font-family: "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", cursive;
+                letter-spacing: 4px;
+                background-color: rgb(64, 137, 64);
+                padding: 5px;
+                padding-left: 16px;
+                padding-right: 16px;
+                color: white;
+                transition-duration: 0.2s;
+            }
+            #go:hover {
+                background-color:rgb(34, 70, 34)
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            // for debugging purposes
+            if (localStorage.getItem("coinface") == null || localStorage.getItem == 0) {
+                let selectedValue = prompt("Enter denomination (no caps)")
+                localStorage.setItem("coinface",selectedValue)
+            }
+            let side, result
+            function coinFlip() {
+                document.getElementById("coinScreen").src = "coins/flipping.gif"
+                document.getElementById("screenText").innerText = "Flipping..."
+                let V = Math.round(Math.random())
+                if (V == 0) {
+                    side = 'front'
+                    result = "Heads"
+                } else {
+                    side = 'back'
+                    result = "Tails"
+                }
+                setTimeout( function() {
+                    document.getElementById("coinScreen").src = "coins/" + localStorage.getItem("coinface") + "_" + side + ".png"
+                    document.getElementById("screenText").innerText = result + "!"
+                }, 1100)
+            }
+        </script>
+        <div id="screenText" class="divCentered2">Click to flip!</div>
+        <div class="divCentered"><img onclick="coinFlip()" id="coinScreen"><div style="position: absolute" class="animated-text"></div></div>
+        <script>document.getElementById("coinScreen").src = "coins/" + localStorage.getItem("coinface") + "_front.png"</script>
+    </body>
+</html>
