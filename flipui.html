@@ -31,7 +31,16 @@
                 z-index: 1;
                 justify-content: center; /* Centers horizontally */
                 align-items: center; /* Centers vertically */
-                height: 80vh; 
+                height: 70vh; 
+                font-size: 100px;
+            }
+            .goDiv {
+                display: flex;
+                position: relative;
+                z-index: 1;
+                justify-content: center; /* Centers horizontally */
+                align-items: center; /* Centers vertically */
+                height: 12vh; 
                 font-size: 100px;
             }
             .divCentered2 {
@@ -51,18 +60,19 @@
             }
             #go {
                 border: none;
-                font-size: 30px;
+                font-size: 20px;
                 font-family: "Comic Sans MS", "Chalkboard", "ChalkboardSE-Regular", cursive;
-                letter-spacing: 4px;
+                letter-spacing: 1px;
                 background-color: rgb(64, 137, 64);
                 padding: 5px;
                 padding-left: 16px;
                 padding-right: 16px;
-                color: white;
+                color: rgb(0, 0, 0);
                 transition-duration: 0.2s;
             }
             #go:hover {
-                background-color:rgb(34, 70, 34)
+                background-color:rgb(34, 70, 34);
+                color: white;
             }
         </style>
     </head>
@@ -94,6 +104,6 @@
         <div id="screenText" class="divCentered2">Click to flip!</div>
         <div class="divCentered"><img onclick="coinFlip()" id="coinScreen"><div style="position: absolute" class="animated-text"></div></div>
         <script>document.getElementById("coinScreen").src = "coins/" + localStorage.getItem("coinface") + "_front.png"</script>
-        <button class="divCentered" id="go" onclick="window.location.href = 'foinclip.html'"></button>&lt;- go back</button>
+        <div class="goDiv"><button id="go" onclick="window.location.href = 'foinclip.html'">&lt;- go back</button></div>
     </body>
 </html>
