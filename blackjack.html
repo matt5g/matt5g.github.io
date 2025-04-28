@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>blackjack online</title>
+        <script src="https://pixijs.download/release/pixi.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/PixiPlugin.min.js"></script> 
+    </head>
+    <style>
+        body {
+            margin: 0%;
+            padding: 0%;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+    </style>
+    <body>
+        <script type="module">
+            document.addEventListener("DOMContentLoaded", (event) => {
+                gsap.registerPlugin(PixiPlugin)
+                // gsap code here!
+            });
+            const app = new PIXI.Application();
+            await app.init({ width: window.innerWidth, height: window.innerHeight });
+            document.body.appendChild(app.canvas);
+            
+            // card assignment function
+            if (localStorage.getItem("balance") == null || localStorage.getItem("balance") <= 0) {
+                localStorage.setItem("balance",25)
+            }
+            let cardSpace = {}
+            cardSpace.house = {cardInt: 0}
+            cardSpace.player = {cardInt: 0}
+            async function createCard(group) {
+                cardSpace[group].cardInt ++
+                cardSpace[group]["card" + cardSpace[group].cardInt] = { face: Math.floor(Math.random()*52 + 1) }
+                cardSpace[group]["card" + cardSpace[group].cardInt].value =
+                ( function() {
+                if (cardSpace[group]["card" + cardSpace[group].cardInt].face < 5) {return 2} 
+                else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 5 && cardSpace[group]["card" + cardSpace[group].cardInt].face <=8 ) {return 3}
+                else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 9 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 12) {return 4}
+                else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 13 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 16) {return 5}
+                else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 17 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 20) {return 6}
+                else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 21 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 24) {return 7}
+                else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 25 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 28) {return 8}
+                else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 29 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 32) {return 9}
+                else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 33 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 36) {return 1} 
+                //remember to add dual ace functionality (1 or 11)
+                else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >=37) {return 10}
+                })()
+                await PIXI.Assets.load("cards/back.png")
+                cardSpace[group]["card" + cardSpace[group].cardInt].sprite = new PIXI.Sprite(PIXI.Texture.from('cards/back.png'));
+                if (cardSpace.group == "player") {
+                    setTimeout(() => {flipCard("player")},150)
+                }
+
+                //app.stage.addChild(PIXI.Sprite.from("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png"));
+                app.stage.addChild(cardSpace[group]["card" + cardSpace[group].cardInt].sprite);
+            }
+            async function flipCard(group) {
+                // all of the player's cards should be flipped by default; every card except the second one on the house (before the player holds) should be flipped by default.
+                await PIXI.Assets.load("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png");
+                cardSpace[group]["card" + cardSpace[group].cardInt].sprite.texture = PIXI.Texture.from("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png")
+            }
+            let wagerBox
+            async function startScreen() {
+                let vCash = 5
+                // sprite initialization
+                let ch1 = await PIXI.Assets.load("chip1.png")
+                let pR = await PIXI.Assets.load("plus.svg")
+                let mR = await PIXI.Assets.load("minus.svg")
+                let gB = await PIXI.Assets.load("bet.png")
+                wagerBox = new PIXI.Container();
+                let balBox = new PIXI.Container();
+                let inputField = document.createElement('input')
+                let bg = await PIXI.Assets.load("background.png")
+                let bgFlood = new PIXI.Sprite(bg)
+                let chip1 = new PIXI.Sprite(ch1)
+                let balField = new PIXI.Text("$"+(parseInt(localStorage.getItem("balance"))-vCash), {
+                    fontFamily: 'Arial',
+                    fontSize: 24,
+                    fill: 'white'
+                });
+                balBox.addChild(chip1)
+                balBox.addChild(balField)
+                balBox.y = 60
+                balField.anchor.set(0.5)
+                balField.x = 0
+                balField.y = 0
+                bgFlood.height = window.innerHeight
+                bgFlood.width = window.innerWidth
+                const fScale = Math.max(
+                    app.screen.width / bgFlood.texture.width,
+                    app.screen.height / bgFlood.texture.height
+                );
+                bgFlood.scale.set(fScale);
+                app.stage.addChildAt(bgFlood, 0)
+                document.body.appendChild(inputField)
+                pR.source.scaleMode = 'linear'
+                mR.source.scaleMode = 'linear'
+                inputField.type = 'text';
+                inputField.id = 'wBox';
+                inputField.value = '$' + vCash
+                inputField.style.position = 'absolute';
+                //for positioning, the subtract here needs be half \/ of the actual thing
+                inputField.style.left = `${window.innerWidth / 2 - 50}px`;
+                inputField.style.top = `${window.innerHeight / 2 - 20}px`;
+                inputField.style.width = '100px';
+                inputField.style.height = '40px';
+                inputField.style.backgroundColor = 'black';
+                inputField.style.color = 'white';
+                inputField.style.border = '1px solid white';
+                inputField.style.fontSize = '20px';
+                let cashField = new PIXI.DOMContainer(inputField);
+                wagerBox.x = window.innerWidth/2
+                wagerBox.y = window.innerHeight/2
+                let plusR = new PIXI.Sprite(pR);
+                let minusR = new PIXI.Sprite(mR);
+                let goButton = new PIXI.Sprite(gB);
+                function refreshBalField() {balField.text = "$"+(parseInt(localStorage.getItem("balance"))-vCash)}
+                function upBet() {if(vCash < parseInt(localStorage.getItem("balance"))){vCash += 5; inputField.value = "$"+vCash};refreshBalField()};
+                function downBet() {if(vCash > 5){vCash -=5; inputField.value = "$"+vCash};refreshBalField()}
+                plusR.eventMode = 'static'
+                minusR.eventMode = 'static'
+                goButton.eventMode = 'static'
+                plusR.cursor = 'pointer'
+                minusR.cursor = 'pointer'
+                goButton.cursor = 'pointer'
+                plusR.on('pointerdown', upBet)
+                minusR.on('pointerdown', downBet)
+                goButton.on('pointerdown',playScreen)
+                // adds children to the container which is centered
+                wagerBox.addChild(plusR)
+                wagerBox.addChild(minusR)
+                wagerBox.addChild(cashField)
+                wagerBox.addChild(goButton)
+                wagerBox.addChild(balBox)
+                chip1.x = -60
+                chip1.y = 0
+                chip1.anchor.set(0.5)
+                chip1.scale.set(0.1)
+                plusR.x = 120
+                plusR.anchor.set(0.5)
+                plusR.scale.set(0.2)
+                minusR.x = -120
+                minusR.anchor.set(0.5)
+                minusR.scale.set(0.2)
+                goButton.anchor.set(0.5)
+                goButton.y = 200
+                goButton.scale.set(0.5)
+                app.stage.addChild(wagerBox)
+                console.log(wagerBox)
+            }
+            async function playScreen() {
+                clearScreen()
+                let bg = await PIXI.Assets.load('background2.png')
+                let bgFlood = new PIXI.Sprite(bg)
+                bgFlood.height = window.innerHeight
+                bgFlood.width = window.innerWidth
+                const fScale = Math.max(
+                    app.screen.width / bgFlood.texture.width,
+                    app.screen.height / bgFlood.texture.height
+                );
+                bgFlood.scale.set(fScale);
+                app.stage.addChildAt(bgFlood, 0)
+            }
+            function clearScreen() {
+                app.stage.children.forEach(sprite => {
+                    gsap.to("input", { opacity: 0, duration: 0.25})
+                    gsap.to(sprite, { alpha: 0, duration:  0.25}) // fadeValue between 0 (transparent) and 1 (opaque)
+                });
+                setTimeout(function () {wagerBox.destroy();document.getElementById('wBox').remove()},250)
+            }
+            console.log(cardSpace)
+            startScreen();
+        </script>
+    </body>
+</html>
