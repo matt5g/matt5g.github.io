@@ -29,11 +29,15 @@
                 localStorage.setItem("balance",25)
             }
             let cardSpace = {}
+            let cardArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52]
             cardSpace.house = {cardInt: 0}
             cardSpace.player = {cardInt: 0}
             async function createCard(group) {
+                
                 cardSpace[group].cardInt ++
-                cardSpace[group]["card" + cardSpace[group].cardInt] = { face: Math.floor(Math.random()*52 + 1) }
+                cardSpace[group]["card" + cardSpace[group].cardInt] = { face: cardArray[Math.floor(Math.random() * cardArray.length)] }
+                console.log(cardSpace[group]["card" + cardSpace[group].cardInt].face)
+                cardArray = cardArray.filter(item => item !== cardSpace[group]["card" + cardSpace[group].cardInt].face)
                 cardSpace[group]["card" + cardSpace[group].cardInt].value =
                 ( function() {
                 if (cardSpace[group]["card" + cardSpace[group].cardInt].face < 5) {return 2} 
@@ -45,26 +49,45 @@
                 else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 25 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 28) {return 8}
                 else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 29 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 32) {return 9}
                 else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 33 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 36) {return 1} 
-                //remember to add dual ace functionality (1 or 11)
+                // remember to add dual ace functionality (1 or 11)
                 else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >=37) {return 10}
                 })()
                 await PIXI.Assets.load("cards/back.png")
-                cardSpace[group]["card" + cardSpace[group].cardInt].sprite = new PIXI.Sprite(PIXI.Texture.from('cards/back.png'));
-                if (cardSpace.group == "player") {
-                    setTimeout(() => {flipCard("player")},150)
+                await PIXI.Assets.load("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png");
+                if (group == "house" && cardSpace[group].cardInt == 2) {
+                    cardSpace[group]["card" + cardSpace[group].cardInt].sprite = new PIXI.Sprite(PIXI.Texture.from('cards/back.png'));
+                } else {
+                    cardSpace[group]["card" + cardSpace[group].cardInt].sprite = new PIXI.Sprite(PIXI.Texture.from("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png"))
                 }
-
-                //app.stage.addChild(PIXI.Sprite.from("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png"));
-                app.stage.addChild(cardSpace[group]["card" + cardSpace[group].cardInt].sprite);
+                cardSpace[group]["card" + cardSpace[group].cardInt].sprite.scale.set(0.3)
+                cardSpace[group]["card" + cardSpace[group].cardInt].sprite.anchor.set(0.5)
+                cardSpace[group]["card" + cardSpace[group].cardInt].sprite.x = window.innerWidth + 20
+                //cardSpace[group]["card" + cardSpace[group].cardInt].sprite.x = 50 * (cardSpace[group].cardInt - 1)
+               //cardSpace[group+'Box'].x = window.innerWidth/2 - 25 * (cardSpace[group].cardInt - 1)
+                cardSpace[group+'Box'].addChild(cardSpace[group]["card" + cardSpace[group].cardInt].sprite)
+                gsap.to(cardSpace[group]["card" + cardSpace[group].cardInt].sprite, { x: 50 * (cardSpace[group].cardInt - 1), duration: 0.2})
+                gsap.to(cardSpace[group+'Box'], { x:  window.innerWidth/2 - 25 * (cardSpace[group].cardInt - 1), duration: 0.2})
+                console.log(cardArray, cardSpace[group]["card" + cardSpace[group].cardInt].face)
             }
             async function flipCard(group) {
                 // all of the player's cards should be flipped by default; every card except the second one on the house (before the player holds) should be flipped by default.
-                await PIXI.Assets.load("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png");
-                cardSpace[group]["card" + cardSpace[group].cardInt].sprite.texture = PIXI.Texture.from("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png")
+                let newTexture = await PIXI.Assets.load("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png");
+                gsap.to(cardSpace[group]["card" + cardSpace[group].cardInt].sprite.scale, {
+                    x: 0,
+                    duration: 0.25,
+                    onComplete: () => {
+                        cardSpace[group]["card" + cardSpace[group].cardInt].sprite.texture = newTexture // Swap to new card face
+                        gsap.to(cardSpace[group]["card" + cardSpace[group].cardInt].sprite.scale, {
+                            x: 0.3,
+                            duration: 0.25
+                        })
+                    }
+                });
+                //cardSpace[group]["card" + cardSpace[group].cardInt].sprite.texture = PIXI.Texture.from("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png")
             }
+            let vCash = 5
             let wagerBox
             async function startScreen() {
-                let vCash = 5
                 // sprite initialization
                 let ch1 = await PIXI.Assets.load("chip1.png")
                 let pR = await PIXI.Assets.load("plus.svg")
@@ -152,8 +175,15 @@
                 console.log(wagerBox)
             }
             async function playScreen() {
+                console.log(vCash+'/'+localStorage.getItem('balance'))
+                localStorage.setItem("balance",localStorage.getItem("balance")-vCash)
+                console.log('NOW: '+localStorage.getItem('balance'))
                 clearScreen()
                 let bg = await PIXI.Assets.load('background2.png')
+                let hb = await PIXI.Assets.load('hit.png')
+                let sb = await PIXI.Assets.load('split.png')
+                let db = await PIXI.Assets.load('double.png')
+                let stb = await PIXI.Assets.load('stand.png')
                 let bgFlood = new PIXI.Sprite(bg)
                 bgFlood.height = window.innerHeight
                 bgFlood.width = window.innerWidth
@@ -163,6 +193,107 @@
                 );
                 bgFlood.scale.set(fScale);
                 app.stage.addChildAt(bgFlood, 0)
+                cardSpace.houseBox = new PIXI.Container()
+                let buttonBox = new PIXI.Container()
+                buttonBox.x = window.innerWidth/2
+                buttonBox.y = window.innerHeight/2
+                let hitButton = new PIXI.Sprite(hb)
+                hitButton.x = -330
+                hitButton.eventMode = 'static'
+                hitButton.cursor = 'pointer'
+                hitButton.alpha = 1
+                function hitCard() {
+                    createCard("player")
+                }
+                hitButton.on('pointerdown',hitCard)
+                hitButton.anchor.set(0.5)
+                hitButton.scale.set(0.125)
+                buttonBox.addChild(hitButton)
+                let splitButton = new PIXI.Sprite(sb)
+                splitButton.x = -150
+                splitButton.eventMode = 'static'
+                splitButton.cursor = 'pointer'
+                function splitCard() {
+                    //do this at a later date
+                    console.log(cardSpace.player)
+                }
+                splitButton.anchor.set(0.5)
+                splitButton.scale.set(0.125)
+                splitButton.alpha = 0.5
+                buttonBox.addChild(splitButton)
+                let doubleButton = new PIXI.Sprite(db)
+                doubleButton.x = 150
+                doubleButton.eventMode = 'static'
+                doubleButton.cursor = 'pointer'
+                doubleButton.alpha = 0.5
+                function doubleCard() {
+                    vCash = 2*vCash
+                    refreshBalField()
+                    createCard("player")
+                    doubleButton.off('pointerdown',doubleCard)
+                    doubleButton.alpha = 0.5
+                    setTimeout( async function() {
+                        await standCard()
+                    },300)
+                }
+                console.log(vCash,localStorage.getItem("balance"))
+                if (parseInt(localStorage.getItem("balance")) >= 2*vCash) {
+                    doubleButton.on('pointerdown',doubleCard)
+                    doubleButton.alpha = 1
+                }
+                doubleButton.anchor.set(0.5)
+                doubleButton.scale.set(0.125)
+                buttonBox.addChild(doubleButton)
+                let balField = new PIXI.Text("$"+vCash, {
+                    fontFamily: 'Arial',
+                    fontSize: 24,
+                    fill: 'white'
+                });
+                function refreshBalField() {balField.text = "$"+vCash}
+                balField.anchor.set(0.5)
+                buttonBox.addChild(balField)
+                let standButton = new PIXI.Sprite(stb)
+                standButton.x = 365
+                standButton.eventMode = 'static'
+                standButton.cursor = 'pointer'
+                standButton.alpha = 1
+                function standCard() {
+                    standButton.alpha = 0.5
+                    hitButton.alpha = 0.5
+                    splitButton.alpha = 0.5
+                    doubleButton.alpha = 0.5
+                    standButton.off('pointerdown',standCard)
+                    hitButton.off('pointerdown',hitCard)
+                    doubleButton.off('pointerdown',doubleCard)
+                    splitButton.off('pointerdown',splitCard)
+                    flipCard("house")
+                }
+                standButton.on('pointerdown',standCard)
+                standButton.anchor.set(0.5)
+                standButton.scale.set(0.125)
+                buttonBox.addChild(standButton)
+                cardSpace.houseBox.x = window.innerWidth/2
+                cardSpace.houseBox.y = window.innerHeight/2 - window.innerHeight/3
+                cardSpace.playerBox = new PIXI.Container()
+                cardSpace.playerBox.x = window.innerWidth/2
+                cardSpace.playerBox.y = window.innerHeight/2 + window.innerHeight/3
+                app.stage.addChild(cardSpace.houseBox)
+                app.stage.addChild(cardSpace.playerBox)
+                app.stage.addChild(buttonBox)
+                createCard("house")
+                createCard("player")
+                setTimeout(async () => {
+                    await createCard("house");
+                    await createCard("player");
+                    if (cardSpace.player.card1.value == cardSpace.player.card2.value) {
+                        splitButton.alpha = 1
+                        splitButton.on('pointerdown',splitCard)
+                    }
+                }, 300);
+                                   
+
+                
+
             }
             function clearScreen() {
                 app.stage.children.forEach(sprite => {
