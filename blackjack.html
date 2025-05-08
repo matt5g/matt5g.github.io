@@ -30,13 +30,13 @@
             }
             let cardSpace = {}
             let cardArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52]
-            cardSpace.house = {cardInt: 0}
-            cardSpace.player = {cardInt: 0}
+            cardSpace.house = {cardInt: 0, total: 0, aceHigh: 0}
+            cardSpace.player = {cardInt: 0, total: 0, aceHigh: 0}
             async function createCard(group) {
                 
                 cardSpace[group].cardInt ++
                 cardSpace[group]["card" + cardSpace[group].cardInt] = { face: cardArray[Math.floor(Math.random() * cardArray.length)] }
-                console.log(cardSpace[group]["card" + cardSpace[group].cardInt].face)
+                
                 cardArray = cardArray.filter(item => item !== cardSpace[group]["card" + cardSpace[group].cardInt].face)
                 cardSpace[group]["card" + cardSpace[group].cardInt].value =
                 ( function() {
@@ -48,10 +48,24 @@
                 else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 21 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 24) {return 7}
                 else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 25 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 28) {return 8}
                 else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 29 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 32) {return 9}
-                else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 33 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 36) {return 1} 
+                else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >= 33 && cardSpace[group]["card" + cardSpace[group].cardInt].face <= 36) {
+                    if (cardSpace[group].total + 11 <= 21) {
+                        cardSpace[group].aceHigh = (cardSpace[group].aceHigh || 0) + 1;
+                        return 11;
+                    } else {
+                        return 1;
+                    }
+                }
                 // remember to add dual ace functionality (1 or 11)
                 else if (cardSpace[group]["card" + cardSpace[group].cardInt].face >=37) {return 10}
                 })()
+                cardSpace[group].total += cardSpace[group]["card" + cardSpace[group].cardInt].value
+                // handles dual ace functionality in cases where busting becomes inevitable:
+                while (cardSpace[group].total > 21 && cardSpace[group].aceHigh > 0) {
+                    cardSpace[group].total -= 10;
+                    cardSpace[group].aceHigh -= 1;
+                }
+                console.log("House: " +cardSpace.house.total+ ", Player: " + cardSpace.player.total)
                 await PIXI.Assets.load("cards/back.png")
                 await PIXI.Assets.load("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png");
                 if (group == "house" && cardSpace[group].cardInt == 2) {
@@ -67,7 +81,6 @@
                 cardSpace[group+'Box'].addChild(cardSpace[group]["card" + cardSpace[group].cardInt].sprite)
                 gsap.to(cardSpace[group]["card" + cardSpace[group].cardInt].sprite, { x: 50 * (cardSpace[group].cardInt - 1), duration: 0.2})
                 gsap.to(cardSpace[group+'Box'], { x:  window.innerWidth/2 - 25 * (cardSpace[group].cardInt - 1), duration: 0.2})
-                console.log(cardArray, cardSpace[group]["card" + cardSpace[group].cardInt].face)
             }
             async function flipCard(group) {
                 // all of the player's cards should be flipped by default; every card except the second one on the house (before the player holds) should be flipped by default.
@@ -102,8 +115,23 @@
                 let balField = new PIXI.Text("$"+(parseInt(localStorage.getItem("balance"))-vCash), {
                     fontFamily: 'Arial',
                     fontSize: 24,
-                    fill: 'white'
+                    fill: 'white',
                 });
+                
+               /*  balField.addEventListener('input', (event) => {
+                    vCash = inputHandler(event.target.value);
+                    balField.text = "$"+vCash
+                });
+                
+                function inputHandler(val) {
+                    // needs rework
+                    if (val.includes("$") == true) {
+                        return parseInt(val.replace('$',''))
+                    } else if (parseInt(val) != NaN) {
+                        return parseInt(val)
+                        
+                    }
+                } */
                 balBox.addChild(chip1)
                 balBox.addChild(balField)
                 balBox.y = 60
@@ -172,7 +200,6 @@
                 goButton.y = 200
                 goButton.scale.set(0.5)
                 app.stage.addChild(wagerBox)
-                console.log(wagerBox)
             }
             async function playScreen() {
                 console.log(vCash+'/'+localStorage.getItem('balance'))
@@ -184,6 +211,8 @@
                 let sb = await PIXI.Assets.load('split.png')
                 let db = await PIXI.Assets.load('double.png')
                 let stb = await PIXI.Assets.load('stand.png')
+                let ch = await PIXI.Assets.load('chip2.png')
+                let sc21 = await PIXI.Assets.load('blackjack_icon.png')
                 let bgFlood = new PIXI.Sprite(bg)
                 bgFlood.height = window.innerHeight
                 bgFlood.width = window.innerWidth
@@ -204,6 +233,10 @@
                 hitButton.alpha = 1
                 function hitCard() {
                     createCard("player")
+                    if (cardSpace.player.total >= 21) {
+                        hitButton.off('pointerdown',hitCard)
+                        setTimeout(standCard,300)
+                    }
                 }
                 hitButton.on('pointerdown',hitCard)
                 hitButton.anchor.set(0.5)
@@ -215,7 +248,7 @@
                 splitButton.cursor = 'pointer'
                 function splitCard() {
                     //do this at a later date
-                    console.log(cardSpace.player)
+                    
                 }
                 splitButton.anchor.set(0.5)
                 splitButton.scale.set(0.125)
@@ -236,7 +269,6 @@
                         await standCard()
                     },300)
                 }
-                console.log(vCash,localStorage.getItem("balance"))
                 if (parseInt(localStorage.getItem("balance")) >= 2*vCash) {
                     doubleButton.on('pointerdown',doubleCard)
                     doubleButton.alpha = 1
@@ -244,11 +276,15 @@
                 doubleButton.anchor.set(0.5)
                 doubleButton.scale.set(0.125)
                 buttonBox.addChild(doubleButton)
+                let autoFontScale = 4*(Math.floor(Math.log10(vCash)) - 1)
                 let balField = new PIXI.Text("$"+vCash, {
                     fontFamily: 'Arial',
-                    fontSize: 24,
-                    fill: 'white'
+                    fontSize: 20 - autoFontScale,
+                    fill: 'black'
                 });
+                let balFieldIcon = new PIXI.Sprite(ch)
+                balFieldIcon.anchor.set(0.5)
+                balFieldIcon.scale.set(0.15)
                 function refreshBalField() {balField.text = "$"+vCash}
                 balField.anchor.set(0.5)
                 buttonBox.addChild(balField)
@@ -257,6 +293,15 @@
                 standButton.eventMode = 'static'
                 standButton.cursor = 'pointer'
                 standButton.alpha = 1
+                function countCards() {
+                    setTimeout( () => {
+                        if (cardSpace.house.total > 21 && cardSpace.player.total <= 21) {win()}
+                        else if (cardSpace.player.total > 21) {bust()}
+                        else if (cardSpace.house.total <= 21 && cardSpace.house.total > cardSpace.player.total) {lose()}
+                        else if (cardSpace.house.total <= 21 && cardSpace.house.total < cardSpace.player.total && cardSpace.player.total <= 21) {win()}
+                        else if (cardSpace.house.total == cardSpace.player.total && cardSpace.player.total <= 21) {push()}
+                    },750)
+                }
                 function standCard() {
                     standButton.alpha = 0.5
                     hitButton.alpha = 0.5
@@ -266,12 +311,26 @@
                     hitButton.off('pointerdown',hitCard)
                     doubleButton.off('pointerdown',doubleCard)
                     splitButton.off('pointerdown',splitCard)
-                    flipCard("house")
+                    if (cardSpace.player.total < 21) {
+                        flipCard("house")
+                        let hitCycle = setInterval( function () {
+                            if (cardSpace.house.total < 17){
+                                createCard("house")
+                            } else {
+                                clearInterval(hitCycle)
+                                countCards()
+                            }
+                        },600)
+                    } else {
+                        flipCard("house")
+                        countCards()
+                    }
                 }
                 standButton.on('pointerdown',standCard)
                 standButton.anchor.set(0.5)
                 standButton.scale.set(0.125)
                 buttonBox.addChild(standButton)
+                buttonBox.addChildAt(balFieldIcon, 0)
                 cardSpace.houseBox.x = window.innerWidth/2
                 cardSpace.houseBox.y = window.innerHeight/2 - window.innerHeight/3
                 cardSpace.playerBox = new PIXI.Container()
@@ -289,11 +348,132 @@
                         splitButton.alpha = 1
                         splitButton.on('pointerdown',splitCard)
                     }
+                    if (cardSpace.player.total == 21 && cardSpace.player.cardInt == 2) {
+                        blackjack()
+                    }
                 }, 300);
-                                   
-
-                
-
+                function win() {
+                    gsap.to(buttonBox, { alpha: 0.1, duration: 0.4})
+                    gsap.to(bgFlood, { alpha: 0.1, duration: 0.4})
+                    gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
+                    gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
+                    let score = new PIXI.Text("+$"+2*vCash, {
+                        fontFamily: 'Arial',
+                        fontSize: 80,
+                        fill: 'green'
+                    });
+                    score.anchor.set(0.5)
+                    score.alpha = 0
+                    score.x = window.innerWidth/2
+                    score.y = window.innerHeight/2
+                    app.stage.addChild(score)
+                    gsap.to(score, {alpha: 1, duration: 0.8})
+                    localStorage.setItem("balance",(parseInt(localStorage.getItem("balance")) + 2*vCash))
+                    setTimeout(resetGame, 2000)
+                }
+                function lose() {
+                    gsap.to(buttonBox, { alpha: 0.1, duration: 0.4})
+                    gsap.to(bgFlood, { alpha: 0.1, duration: 0.4})
+                    gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
+                    gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
+                    let score = new PIXI.Text("-$"+vCash, {
+                        fontFamily: 'Arial',
+                        fontSize: 80,
+                        fill: 'red'
+                    });
+                    score.anchor.set(0.5)
+                    score.alpha = 0
+                    score.x = window.innerWidth/2
+                    score.y = window.innerHeight/2
+                    app.stage.addChild(score)
+                    gsap.to(score, {alpha: 1, duration: 0.8})
+                    setTimeout(resetGame, 2000)
+                }
+                function bust() {
+                    gsap.to(buttonBox, { alpha: 0.1, duration: 0.4})
+                    gsap.to(bgFlood, { alpha: 0.1, duration: 0.4})
+                    gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
+                    gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
+                    let score = new PIXI.Text("BUST", {
+                        fontFamily: 'Arial',
+                        fontSize: 80,
+                        fill: 'red'
+                    });
+                    setTimeout(() => {
+                        score.text = "-$" + vCash
+                    }, 1300)
+                    gsap.delayedCall(1, () => {gsap.to(score, {
+                        alpha: 0, 
+                        duration: 0.3,
+                        onComplete: () => {
+                            gsap.to(score, {alpha: 1, duration: 0.4})
+                        }
+                    })});
+                    score.anchor.set(0.5)
+                    score.alpha = 0
+                    score.x = window.innerWidth/2
+                    score.y = window.innerHeight/2
+                    app.stage.addChild(score)
+                    gsap.to(score, {alpha: 1, duration: 0.8})
+                    setTimeout(resetGame,3000)
+                }
+                function push() {
+                    gsap.to(buttonBox, { alpha: 0.1, duration: 0.4})
+                    gsap.to(bgFlood, { alpha: 0.1, duration: 0.4})
+                    gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
+                    gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
+                    let score = new PIXI.Text("PUSH", {
+                        fontFamily: 'Arial',
+                        fontSize: 80,
+                        fill: 'white'
+                    });
+                    score.anchor.set(0.5)
+                    score.alpha = 0
+                    score.x = window.innerWidth/2
+                    score.y = window.innerHeight/2
+                    app.stage.addChild(score)
+                    gsap.to(score, {alpha: 1, duration: 0.8})
+                    localStorage.setItem("balance",(parseInt(localStorage.getItem("balance")) + vCash))
+                    setTimeout(resetGame,2000)
+                }
+                function blackjack() {
+                    gsap.to(buttonBox, { alpha: 0.1, duration: 0.4})
+                    gsap.to(bgFlood, { alpha: 0.1, duration: 0.4})
+                    gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
+                    gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
+                    let score = new PIXI.Sprite(sc21)
+                    setTimeout( () => {
+                        score = new PIXI.Text("+$"+3*vCash, {
+                        fontFamily: 'Arial',
+                        fontSize: 80,
+                        fill: 'green',
+                        scale: 1
+                        })
+                    },1500);
+                    score.anchor.set(0.5)
+                    score.scale.set(0.3)
+                    score.alpha = 0
+                    score.x = window.innerWidth/2
+                    score.y = window.innerHeight/2
+                    app.stage.addChild(score)
+                    gsap.to(score, {
+                        alpha: 1, 
+                        duration: 0.8,
+                        onComplete: () => {
+                            gsap.delayedCall(0.5, () => {
+                                gsap.to(score, {
+                                    alpha: 0,
+                                    duration: 0.5,
+                                    onComplete: () => {
+                                        gsap.to(score, {alpha: 1, duration: 0.8})
+                                    }
+                                })
+                            })
+                        }
+                    })
+                    localStorage.setItem("balance",(parseInt(localStorage.getItem("balance")) + 3*vCash))
+                    setTimeout(resetGame, 4000)
+                }
             }
             function clearScreen() {
                 app.stage.children.forEach(sprite => {
@@ -301,6 +481,22 @@
                     gsap.to(sprite, { alpha: 0, duration:  0.25}) // fadeValue between 0 (transparent) and 1 (opaque)
                 });
                 setTimeout(function () {wagerBox.destroy();document.getElementById('wBox').remove()},250)
+            }
+            function resetGame() {
+                app.stage.children.forEach(sprite => {
+                    gsap.to(sprite, { alpha: 0, duration:  0.25}) // fadeValue between 0 (transparent) and 1 (opaque)
+                });
+                setTimeout( () => {app.stage.removeChildren(); startScreen()}, 400)
+                for (let key in cardSpace) {
+                    if (cardSpace[key] && typeof cardSpace[key].destroy === 'function') {
+                        cardSpace[key].destroy({ children: true });
+                    }
+                    delete cardSpace[key];
+                }
+                cardArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52]
+                cardSpace.house = {cardInt: 0, total: 0, aceHigh: 0}
+                cardSpace.player = {cardInt: 0, total: 0, aceHigh: 0}
+                
             }
             console.log(cardSpace)
             startScreen();
