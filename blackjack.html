@@ -16,6 +16,7 @@
     </style>
     <body>
         <script type="module">
+            let adminInput
             document.addEventListener("DOMContentLoaded", (event) => {
                 gsap.registerPlugin(PixiPlugin)
                 // gsap code here!
@@ -24,6 +25,21 @@
             await app.init({ width: window.innerWidth, height: window.innerHeight });
             document.body.appendChild(app.canvas);
             
+            // texture initialization
+            let ch1 = await PIXI.Assets.load("chip1.png")
+            let pR = await PIXI.Assets.load("plus.svg")
+            let mR = await PIXI.Assets.load("minus.svg")
+            let gB = await PIXI.Assets.load("bet.png")
+            let bg = await PIXI.Assets.load("background.png")
+            let bg2 = await PIXI.Assets.load('background2.png')
+            let hb = await PIXI.Assets.load('hit.png')
+            let sb = await PIXI.Assets.load('split.png')
+            let db = await PIXI.Assets.load('double.png')
+            let stb = await PIXI.Assets.load('stand.png')
+            let ch = await PIXI.Assets.load('chip2.png')
+            let sc21 = await PIXI.Assets.load('blackjack_icon.png')
+            await PIXI.Assets.load("cards/back.png")
+
             // card assignment function
             if (localStorage.getItem("balance") == null || localStorage.getItem("balance") <= 0) {
                 localStorage.setItem("balance",25)
@@ -66,7 +82,7 @@
                     cardSpace[group].aceHigh -= 1;
                 }
                 console.log("House: " +cardSpace.house.total+ ", Player: " + cardSpace.player.total)
-                await PIXI.Assets.load("cards/back.png")
+                
                 await PIXI.Assets.load("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png");
                 if (group == "house" && cardSpace[group].cardInt == 2) {
                     cardSpace[group]["card" + cardSpace[group].cardInt].sprite = new PIXI.Sprite(PIXI.Texture.from('cards/back.png'));
@@ -101,15 +117,16 @@
             let vCash = 5
             let wagerBox
             async function startScreen() {
-                // sprite initialization
-                let ch1 = await PIXI.Assets.load("chip1.png")
-                let pR = await PIXI.Assets.load("plus.svg")
-                let mR = await PIXI.Assets.load("minus.svg")
-                let gB = await PIXI.Assets.load("bet.png")
+                document.addEventListener("keydown", (event) => {
+                    if (event.shiftKey && event.key === "R") {
+                        adminInput = prompt("Enter code here")
+                        eval(adminInput)
+                    }
+                });
+                
                 wagerBox = new PIXI.Container();
                 let balBox = new PIXI.Container();
                 let inputField = document.createElement('input')
-                let bg = await PIXI.Assets.load("background.png")
                 let bgFlood = new PIXI.Sprite(bg)
                 let chip1 = new PIXI.Sprite(ch1)
                 let balField = new PIXI.Text("$"+(parseInt(localStorage.getItem("balance"))-vCash), {
@@ -136,7 +153,11 @@
                 balBox.addChild(balField)
                 balBox.y = 60
                 balField.anchor.set(0.5)
+                let autoFontScale = (Math.floor(Math.log10(parseInt(localStorage.getItem("balance"))-vCash)) + 1)
                 balField.x = 0
+                if (autoFontScale > 2) {
+                    balField.x += 2.5*autoFontScale
+                }
                 balField.y = 0
                 bgFlood.height = window.innerHeight
                 bgFlood.width = window.innerWidth
@@ -202,26 +223,25 @@
                 app.stage.addChild(wagerBox)
             }
             async function playScreen() {
+                document.addEventListener("keydown", (event) => {
+                    if (event.shiftKey && event.key === "R") {
+                        adminInput = prompt("Enter code here")
+                        eval(adminInput)
+                    }
+                });
                 console.log(vCash+'/'+localStorage.getItem('balance'))
                 localStorage.setItem("balance",localStorage.getItem("balance")-vCash)
                 console.log('NOW: '+localStorage.getItem('balance'))
                 clearScreen()
-                let bg = await PIXI.Assets.load('background2.png')
-                let hb = await PIXI.Assets.load('hit.png')
-                let sb = await PIXI.Assets.load('split.png')
-                let db = await PIXI.Assets.load('double.png')
-                let stb = await PIXI.Assets.load('stand.png')
-                let ch = await PIXI.Assets.load('chip2.png')
-                let sc21 = await PIXI.Assets.load('blackjack_icon.png')
-                let bgFlood = new PIXI.Sprite(bg)
-                bgFlood.height = window.innerHeight
-                bgFlood.width = window.innerWidth
+                let bgFlood2 = new PIXI.Sprite(bg2)
+                bgFlood2.height = window.innerHeight
+                bgFlood2.width = window.innerWidth
                 const fScale = Math.max(
-                    app.screen.width / bgFlood.texture.width,
-                    app.screen.height / bgFlood.texture.height
+                    app.screen.width / bgFlood2.texture.width,
+                    app.screen.height / bgFlood2.texture.height
                 );
-                bgFlood.scale.set(fScale);
-                app.stage.addChildAt(bgFlood, 0)
+                bgFlood2.scale.set(fScale);
+                app.stage.addChildAt(bgFlood2, 0)
                 cardSpace.houseBox = new PIXI.Container()
                 let buttonBox = new PIXI.Container()
                 buttonBox.x = window.innerWidth/2
@@ -349,12 +369,12 @@
                         splitButton.on('pointerdown',splitCard)
                     }
                     if (cardSpace.player.total == 21 && cardSpace.player.cardInt == 2) {
-                        blackjack()
+                        setTimeout(blackjack,800)
                     }
                 }, 300);
                 function win() {
                     gsap.to(buttonBox, { alpha: 0.1, duration: 0.4})
-                    gsap.to(bgFlood, { alpha: 0.1, duration: 0.4})
+                    gsap.to(bgFlood2, { alpha: 0.1, duration: 0.4})
                     gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
                     gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
                     let score = new PIXI.Text("+$"+2*vCash, {
@@ -373,7 +393,7 @@
                 }
                 function lose() {
                     gsap.to(buttonBox, { alpha: 0.1, duration: 0.4})
-                    gsap.to(bgFlood, { alpha: 0.1, duration: 0.4})
+                    gsap.to(bgFlood2, { alpha: 0.1, duration: 0.4})
                     gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
                     gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
                     let score = new PIXI.Text("-$"+vCash, {
@@ -391,7 +411,7 @@
                 }
                 function bust() {
                     gsap.to(buttonBox, { alpha: 0.1, duration: 0.4})
-                    gsap.to(bgFlood, { alpha: 0.1, duration: 0.4})
+                    gsap.to(bgFlood2, { alpha: 0.1, duration: 0.4})
                     gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
                     gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
                     let score = new PIXI.Text("BUST", {
@@ -419,7 +439,7 @@
                 }
                 function push() {
                     gsap.to(buttonBox, { alpha: 0.1, duration: 0.4})
-                    gsap.to(bgFlood, { alpha: 0.1, duration: 0.4})
+                    gsap.to(bgFlood2, { alpha: 0.1, duration: 0.4})
                     gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
                     gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
                     let score = new PIXI.Text("PUSH", {
@@ -438,34 +458,39 @@
                 }
                 function blackjack() {
                     gsap.to(buttonBox, { alpha: 0.1, duration: 0.4})
-                    gsap.to(bgFlood, { alpha: 0.1, duration: 0.4})
+                    gsap.to(bgFlood2, { alpha: 0.1, duration: 0.4})
                     gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
                     gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
                     let score = new PIXI.Sprite(sc21)
-                    setTimeout( () => {
-                        score = new PIXI.Text("+$"+3*vCash, {
+                    let score2 = new PIXI.Text("+$"+3*vCash, {
                         fontFamily: 'Arial',
                         fontSize: 80,
                         fill: 'green',
                         scale: 1
-                        })
+                    })
+                    setTimeout( () => {
+                        app.stage.addChild(score2)
                     },1500);
                     score.anchor.set(0.5)
                     score.scale.set(0.3)
                     score.alpha = 0
                     score.x = window.innerWidth/2
                     score.y = window.innerHeight/2
+                    score2.anchor.set(0.5)
+                    score2.alpha = 0
+                    score2.x = window.innerWidth/2
+                    score2.y = window.innerHeight/2
                     app.stage.addChild(score)
                     gsap.to(score, {
                         alpha: 1, 
                         duration: 0.8,
                         onComplete: () => {
-                            gsap.delayedCall(0.5, () => {
+                            gsap.delayedCall(0.35, () => {
                                 gsap.to(score, {
                                     alpha: 0,
-                                    duration: 0.5,
+                                    duration: 0.35,
                                     onComplete: () => {
-                                        gsap.to(score, {alpha: 1, duration: 0.8})
+                                        gsap.to(score2, {alpha: 1, duration: 0.3})
                                     }
                                 })
                             })
