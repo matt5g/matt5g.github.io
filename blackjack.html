@@ -39,6 +39,11 @@
             let ch = await PIXI.Assets.load('chip2.png')
             let sc21 = await PIXI.Assets.load('blackjack_icon.png')
             await PIXI.Assets.load("cards/back.png")
+            const cardPaths = [];
+            for (let i = 1; i <= 52; i++) {
+                cardPaths.push(`cards/${i}.png`);
+            }
+            await PIXI.Assets.load(cardPaths);
 
             // card assignment function
             if (localStorage.getItem("balance") == null || localStorage.getItem("balance") <= 0) {
@@ -83,7 +88,7 @@
                 }
                 console.log("House: " +cardSpace.house.total+ ", Player: " + cardSpace.player.total)
                 
-                await PIXI.Assets.load("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png");
+                //await PIXI.Assets.load("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png");
                 if (group == "house" && cardSpace[group].cardInt == 2) {
                     cardSpace[group]["card" + cardSpace[group].cardInt].sprite = new PIXI.Sprite(PIXI.Texture.from('cards/back.png'));
                 } else {
@@ -100,7 +105,7 @@
             }
             async function flipCard(group) {
                 // all of the player's cards should be flipped by default; every card except the second one on the house (before the player holds) should be flipped by default.
-                let newTexture = await PIXI.Assets.load("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png");
+                let newTexture = PIXI.Texture.from("cards/" + cardSpace[group]["card" + cardSpace[group].cardInt].face + ".png");
                 gsap.to(cardSpace[group]["card" + cardSpace[group].cardInt].sprite.scale, {
                     x: 0,
                     duration: 0.25,
