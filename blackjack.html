@@ -118,7 +118,7 @@
             let wagerBox
             async function startScreen() {
                 document.addEventListener("keydown", (event) => {
-                    if (event.shiftKey && event.key === "R") {
+                    if (event.shiftKey && event.key === "D") {
                         adminInput = prompt("Enter code here")
                         eval(adminInput)
                     }
@@ -377,7 +377,7 @@
                     gsap.to(bgFlood2, { alpha: 0.1, duration: 0.4})
                     gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
                     gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
-                    let score = new PIXI.Text("+$"+2*vCash, {
+                    let score = new PIXI.Text("+$"+vCash, {
                         fontFamily: 'Arial',
                         fontSize: 80,
                         fill: 'green'
@@ -462,7 +462,7 @@
                     gsap.to(cardSpace.playerBox, { alpha: 0, duration: 0.4})
                     gsap.to(cardSpace.houseBox, { alpha: 0, duration: 0.4})
                     let score = new PIXI.Sprite(sc21)
-                    let score2 = new PIXI.Text("+$"+3*vCash, {
+                    let score2 = new PIXI.Text("+$"+Math.ceil(1.5*vCash), {
                         fontFamily: 'Arial',
                         fontSize: 80,
                         fill: 'green',
@@ -496,7 +496,7 @@
                             })
                         }
                     })
-                    localStorage.setItem("balance",(parseInt(localStorage.getItem("balance")) + 3*vCash))
+                    localStorage.setItem("balance",(parseInt(localStorage.getItem("balance")) + Math.ceil(2.5*vCash)))
                     setTimeout(resetGame, 4000)
                 }
             }
