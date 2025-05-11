@@ -154,6 +154,13 @@
                         
                     }
                 } */
+                if (parseInt(localStorage.getItem("balance"))-vCash < 0) {
+                    vCash = parseInt(localStorage.getItem("balance"))
+                } else if (parseInt(localStorage.getItem("balance")) <= 0) {
+                    alert("You are now out of money. Do you want to start over?")
+                    location.reload()
+                }
+
                 balBox.addChild(chip1)
                 balBox.addChild(balField)
                 balBox.y = 60
