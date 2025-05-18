@@ -158,7 +158,14 @@
                         eval(adminInput)
                     }
                 });
-                
+                if (parseInt(localStorage.getItem("balance"))-vCash < 0 && parseInt(localStorage.getItem("balance")) > 0) {
+                    vCash = parseInt(localStorage.getItem("balance"))
+                    console.log("low")
+                } else if (parseInt(localStorage.getItem("balance")) <= 0) {
+                    alert("You have lost all your money! Continue?")
+                    location.reload()
+                    console.log("empty")
+                }
                 wagerBox = new PIXI.Container();
                 let balBox = new PIXI.Container();
                 let inputField = document.createElement('input')
@@ -191,14 +198,7 @@
 
                      
                 });
-                if (parseInt(localStorage.getItem("balance"))-vCash < 0 && parseInt(localStorage.getItem("balance")) > 0) {
-                    vCash = parseInt(localStorage.getItem("balance"))
-                    console.log("low")
-                } else if (parseInt(localStorage.getItem("balance")) <= 0) {
-                    alert("You have lost all your money! Continue?")
-                    location.reload()
-                    console.log("empty")
-                }
+                
                 
                 
                 balBox.addChild(chip1)
@@ -261,7 +261,7 @@
                 document.body.appendChild(htmlSign)
                 let dollaSign = new PIXI.DOMContainer(htmlSign)
                 function refreshBalField() {balField.text = "$"+(parseInt(localStorage.getItem("balance"))-vCash)}
-                function upBet() {if(vCash < parseInt(localStorage.getItem("balance"))){vCash += 5; inputField.value = vCash};refreshBalField()};
+                function upBet() {if(vCash <= parseInt(localStorage.getItem("balance")) - 5) {vCash += 5; inputField.value = vCash};refreshBalField()};
                 function downBet() {if(vCash > 5){vCash -=5; inputField.value = vCash};refreshBalField()}
                 plusR.eventMode = 'static'
                 minusR.eventMode = 'static'
@@ -505,7 +505,7 @@
                 setTimeout(async () => {
                     await createCard("house");
                     await createCard("player");
-                    if (cardSpace.player.card1.value == cardSpace.player.card2.value && isSplit === false) {
+                    if (cardSpace.player.card1.value == cardSpace.player.card2.value && isSplit === false && parseInt(localStorage.getItem("balance")) >= vCash) {
                         splitButton.alpha = 1
                         splitButton.on('pointerdown',splitCard)
                     }
@@ -660,7 +660,7 @@
                         else if (finalScore === 0) return "";
                         else return "+";
                     })()
-                    let score = new PIXI.Text(deltaSign+"$"+finalScore, {
+                    let score = new PIXI.Text(deltaSign+"$"+Math.abs(finalScore), {
                         fontFamily: 'casinoType',
                         fontSize: 120,
                         fill: (() => { 
