@@ -27,6 +27,7 @@
         }
     </style>
     <link rel="preload" href="/fonts/casino_type.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <span style="font-family: 'casinoType'; visibility: hidden; position: absolute;">.</span>
     <body>
         <script type="module">
             let adminInput
@@ -35,12 +36,16 @@
             const app = new PIXI.Application();
             await app.init({ width: window.innerWidth, height: window.innerHeight });
             document.body.appendChild(app.canvas);
-           /*  let loaderTexture = await PIXI.Assets.load("loading.gif")
-            let loader = new PIXI.Sprite(loaderTexture)
-            loader.x = window.innerWidth/2
-            loader.y = window.innerHeight/2
-            loader.anchor.set(0.5)
-            app.stage.addChild(loader) */
+            const gif = document.createElement('img');
+            gif.src = 'loading.gif';
+            gif.style.position = 'absolute';
+            gif.style.left = `${window.innerWidth / 2 - 250}px`; // 20 added to correct margin in CSS
+            gif.style.top = `${window.innerHeight / 2 - 250}px`;
+            gif.style.pointerEvents = 'none';
+
+            document.body.appendChild(gif);
+            let loader = new PIXI.DOMContainer(gif)
+            app.stage.addChild(loader)
 
             // texture initialization
             let ch1 = await PIXI.Assets.load("chip1.png")
@@ -61,7 +66,7 @@
                 cardPaths.push(`cards/${i}.png`);
             }
             await PIXI.Assets.load(cardPaths);
-
+            gif.remove()
             // card assignment function
             if (localStorage.getItem("balance") == null || localStorage.getItem("balance") <= 0) {
                 localStorage.setItem("balance",25)
