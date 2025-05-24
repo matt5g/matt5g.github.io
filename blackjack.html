@@ -404,7 +404,7 @@
                         await standCard()
                     },300)
                 }
-                if (parseInt(localStorage.getItem("balance")) >= 2*vCash) {
+                if (parseInt(localStorage.getItem("balance")) >= vCash) {
                     doubleButton.on('pointerdown',doubleCard)
                     doubleButton.alpha = 1
                 }
